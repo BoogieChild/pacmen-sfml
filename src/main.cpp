@@ -11,14 +11,14 @@ int main()
     // Load tilemap data from JSON
     TileMapData tilemapData;
     try {
-        tilemapData = TileMapLoader::loadFromJSON("util/pacmantiles.json");
+        tilemapData = TileMapLoader::loadFromJSON("util/pacmantiles32.json");
     } catch (const std::exception& e) {
         std::cerr << "Error loading tilemap: " << e.what() << std::endl;
         return -1;
     }
 
     TileMap map;
-    if (!map.load("assets/maze.png",
+    if (!map.load("assets/maze32.png",
                   {tilemapData.tileSize, tilemapData.tileSize},
                   tilemapData.tiles.data(),
                   tilemapData.width,
