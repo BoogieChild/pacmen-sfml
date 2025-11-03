@@ -1,4 +1,5 @@
-#pragma once
+#ifndef TILEMAPLOADER_H
+#define TILEMAPLOADER_H
 
 #include <nlohmann/json.hpp>
 #include <fstream>
@@ -9,16 +10,16 @@
 
 using json = nlohmann::json;
 
-struct TilemapData {
+struct TileMapData {
     std::vector<int> tiles;
     unsigned int width;
     unsigned int height;
     unsigned int tileSize;
 };
 
-class TilemapLoader {
+class TileMapLoader {
 public:
-    static TilemapData loadFromJSON(const std::filesystem::path& jsonPath) {
+    static TileMapData loadFromJSON(const std::filesystem::path& jsonPath) {
         std::ifstream file(jsonPath);
         if (!file.is_open()) {
             throw std::runtime_error("Failed to open JSON file: " + jsonPath.string());
@@ -27,7 +28,7 @@ public:
         json data = json::parse(file);
         file.close();
 
-        TilemapData result;
+        TileMapData result;
         result.tileSize = data["tileSize"].get<unsigned int>();
 
         // Get the first layer's tiles
@@ -76,3 +77,5 @@ public:
         return result;
     }
 };
+
+#endif
