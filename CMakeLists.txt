@@ -10,8 +10,16 @@ FetchContent_Declare(SFML
     GIT_SHALLOW ON
     EXCLUDE_FROM_ALL
     SYSTEM)
-FetchContent_MakeAvailable(SFML)
+
+FetchContent_Declare(json
+    GIT_REPOSITORY https://github.com/nlohmann/json.git
+    GIT_TAG v3.11.3
+    GIT_SHALLOW ON
+    EXCLUDE_FROM_ALL
+    SYSTEM)
+
+FetchContent_MakeAvailable(SFML json)
 
 add_executable(main src/main.cpp)
 target_compile_features(main PRIVATE cxx_std_17)
-target_link_libraries(main PRIVATE SFML::Graphics)
+target_link_libraries(main PRIVATE SFML::Graphics nlohmann_json::nlohmann_json)

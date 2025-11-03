@@ -2,6 +2,8 @@
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Keyboard.hpp>
+#include <iostream>
+#include "TilemapLoader.h"
 
 class TileMap : public sf::Drawable, public sf::Transformable {
 public:
@@ -70,19 +72,21 @@ private:
 
 int main()
 {
-    constexpr std::array level = {
-        0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 2, 0, 0, 0, 0,
-        1, 1, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3,
-        0, 1, 0, 0, 2, 0, 3, 3, 3, 0, 1, 1, 1, 0, 0, 0,
-        0, 1, 1, 0, 3, 3, 3, 0, 0, 0, 1, 1, 1, 2, 0, 0,
-        0, 0, 1, 0, 3, 0, 2, 2, 0, 0, 1, 1, 1, 1, 2, 0,
-        2, 0, 1, 0, 3, 0, 2, 2, 2, 0, 1, 1, 1, 1, 1, 1,
-        0, 0, 1, 0, 3, 2, 2, 2, 0, 0, 0, 0, 1, 1, 1, 1,
-    };
+    // Load tilemap data from JSON
+    TilemapData tilemapData;
+    try {
+        tilemapData = TilemapLoader::loadFromJSON("util/pacmantiles.json");
+    } catch (const std::exception& e) {
+        std::cerr << "Error loading tilemap: " << e.what() << std::endl;
+        return -1;
+    }
 
     TileMap map;
-    if (!map.load("assets/tileset.png", {32, 32}, level.data(), 16, 8))
+    if (!map.load("assets/maze.png",
+                  {tilemapData.tileSize, tilemapData.tileSize},
+                  tilemapData.tiles.data(),
+                  tilemapData.width,
+                  tilemapData.height))
         return -1;
 
     auto window = sf::RenderWindow(sf::VideoMode({1920u, 1080u}), "Pacmen");
