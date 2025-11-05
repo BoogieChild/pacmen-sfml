@@ -1,12 +1,12 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/Font.hpp>
+#include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <iostream>
 #include <string>
-//#include "TileMapLoader.h"
 #include "TileMap.h"
 
 int main()
@@ -36,9 +36,13 @@ int main()
     sf::Text currTile(bitFont, "Current Tile: ");
     currTile.move({1000, 50});
 
-    sf::CircleShape pacman(20.0f);
-    pacman.setFillColor(sf::Color(255, 255, 0));
-    pacman.move({(mazeMap.tileSize * 1.0f), (mazeMap.tileSize * 1.0f)});
+    //sf::CircleShape pacman(20.0f);
+    //pacman.setFillColor(sf::Color(255, 255, 0));
+    //pacman.move({(mazeMap.tileSize * 1.0f), (mazeMap.tileSize * 1.0f)});
+
+    const sf::Texture pinkPacmanMovement("assets/pink_pac_man_movement32.png");
+
+    sf::Sprite pinkPacmanSpriteOne(pinkPacmanMovement, {{0, 0}, {32, 32}});
 
     int x = 0;
     int y = 0;
@@ -74,26 +78,27 @@ int main()
         window.draw(tileX);
         window.draw(tileY);
         window.draw(tileId);
+        window.draw(pinkPacmanSpriteOne);
 
-        window.draw(pacman);
+        //window.draw(pacman);
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) {
-            pacman.move({0, -5.0f});
+            pinkPacmanSpriteOne.move({0, -5.0f});
             y--;
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
-            pacman.move({-5.0f, 0});
+            pinkPacmanSpriteOne.move({-5.0f, 0});
             x--;
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) {
-            pacman.move({0, 5.0f});
+            pinkPacmanSpriteOne.move({0, 5.0f});
             y++;
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
-            pacman.move({5.0f, 0});
+            pinkPacmanSpriteOne.move({5.0f, 0});
             x++;
         }
 
