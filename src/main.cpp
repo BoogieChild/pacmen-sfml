@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/Font.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/System/Vector2.hpp>
@@ -40,9 +41,11 @@ int main()
     //pacman.setFillColor(sf::Color(255, 255, 0));
     //pacman.move({(mazeMap.tileSize * 1.0f), (mazeMap.tileSize * 1.0f)});
 
-    const sf::Texture pinkPacmanMovement("assets/pink_pac_man_movement32.png");
+    //const sf::Texture pinkPacmanMovement("assets/pink_pac_man_movement32.png");
+    const sf::Texture pinkPacmanMovement("assets/pink_pac_man_movement48.png");
 
-    sf::Sprite pinkPacmanSpriteOne(pinkPacmanMovement, {{0, 0}, {32, 32}});
+    //sf::Sprite pinkPacmanSpriteOne(pinkPacmanMovement, {{0, 0}, {32, 32}});
+    sf::Sprite pinkPacmanSpriteOne(pinkPacmanMovement, {{0, 0}, {48, 48}});
 
     int x = 0;
     int y = 0;
@@ -79,8 +82,6 @@ int main()
         window.draw(tileY);
         window.draw(tileId);
         window.draw(pinkPacmanSpriteOne);
-
-        //window.draw(pacman);
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) {
             pinkPacmanSpriteOne.move({0, -5.0f});
