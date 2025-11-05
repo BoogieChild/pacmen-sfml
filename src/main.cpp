@@ -83,22 +83,22 @@ int main()
         window.draw(tileId);
         window.draw(pinkPacmanSpriteOne);
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)) {
             pinkPacmanSpriteOne.move({0, -5.0f});
             y--;
         }
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {
             pinkPacmanSpriteOne.move({-5.0f, 0});
             x--;
         }
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)|| sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)) {
             pinkPacmanSpriteOne.move({0, 5.0f});
             y++;
         }
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
             pinkPacmanSpriteOne.move({5.0f, 0});
             x++;
         }
