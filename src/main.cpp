@@ -6,6 +6,7 @@
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Keyboard.hpp>
+#include <cmath>
 #include <iostream>
 #include <string>
 #include "TileMap.h"
@@ -37,29 +38,31 @@ int main()
     sf::Text currTile(bitFont, "Current Tile: ");
     currTile.move({1000, 50});
 
-    //sf::CircleShape pacman(20.0f);
-    //pacman.setFillColor(sf::Color(255, 255, 0));
-    //pacman.move({(mazeMap.tileSize * 1.0f), (mazeMap.tileSize * 1.0f)});
+    sf::Text currTileX(bitFont, "X: ");
+    currTileX.move({1000, 100});
 
-    //const sf::Texture pinkPacmanMovement("assets/pink_pac_man_movement32.png");
+    sf::Text currTileY(bitFont, "Y: ");
+    currTileY.move({1000, 150});
+
+    sf::Text tileX(bitFont, "");
+    tileX.move({1100, 100});
+
+    sf::Text tileY(bitFont, "");
+    tileY.move({1100, 150});
+
+    sf::Text pacCent(bitFont, "Pacman Center:");
+    pacCent.move({1000, 200});
+
+    sf::Text pacCentX(bitFont, "");
+    pacCentX.move({1000, 250});
+
+    sf::Text pacCentY(bitFont, "");
+    pacCentY.move({1000, 300});
+
     const sf::Texture pinkPacmanMovement("assets/pink_pac_man_movement48.png");
-
-    //sf::Sprite pinkPacmanSpriteOne(pinkPacmanMovement, {{0, 0}, {32, 32}});
     sf::Sprite pinkPacmanSpriteOne(pinkPacmanMovement, {{0, 0}, {48, 48}});
 
-    int x = 0;
-    int y = 0;
-    
-    sf::Text tileX(bitFont, "0");
-    tileX.move({1000, 100});
-
-    sf::Text tileY(bitFont, "0");
-    tileY.move({1100, 100});
-
-    sf::Text tileId(bitFont, "");
-    tileId.move({1000, 150});
-
-    int tileInt = 0;
+    sf::Vector2f pacmanCenter({0, 0});
 
     while (window.isOpen())
     {
@@ -71,40 +74,50 @@ int main()
             }
         }
 
-        int intTileId = mazeMap.getTileId(0, 0);
-        tileId.setString(std::to_string(intTileId));
-
         window.clear(); 
 
         window.draw(map);
         window.draw(currTile);
         window.draw(tileX);
         window.draw(tileY);
-        window.draw(tileId);
+        window.draw(currTileX);
+        window.draw(currTileY);
         window.draw(pinkPacmanSpriteOne);
+        window.draw(pacCent);
+        window.draw(pacCentX);
+        window.draw(pacCentY);
+
+        pacmanCenter = {pinkPacmanSpriteOne.getPosition().x + 16.0f, pinkPacmanSpriteOne.getPosition().y + 16.0f};
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)) {
             pinkPacmanSpriteOne.move({0, -5.0f});
-            y--;
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {
             pinkPacmanSpriteOne.move({-5.0f, 0});
-            x--;
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)|| sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)) {
             pinkPacmanSpriteOne.move({0, 5.0f});
-            y++;
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
             pinkPacmanSpriteOne.move({5.0f, 0});
-            x++;
         }
 
-        tileX.setString(std::to_string(x));
-        tileY.setString(std::to_string(y));
+        // center coord 16, 16
+        // tile 0, 0
+        // center coord 48, 48
+        // tile 1, 1
+        // center coord 80, 80
+        // tile 2, 2
+        // (cent - 16) / 32
+
+        tileX.setString(std::to_string(std::round((pacmanCenter.x - 16) / 32)));
+        tileY.setString(std::to_string(std::round((pacmanCenter.y - 16) / 32)));
+
+        pacCentX.setString(std::to_string(pacmanCenter.x));
+        pacCentY.setString(std::to_string(pacmanCenter.y));
 
         window.display();
     }
