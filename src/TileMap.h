@@ -14,14 +14,6 @@
 
 using json = nlohmann::json;
 
-struct TileMapData {
-    std::vector<int> tiles;
-    unsigned int width;
-    unsigned int height;
-    unsigned int tileSize;
-};
-
-
 class TileMap : public sf::Drawable, public sf::Transformable {
 public:
     std::vector<int> tiles;

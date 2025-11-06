@@ -22,8 +22,8 @@ int main()
         return -1;
     }
 
-    TileMap map;
-    if (!map.load("assets/maze32.png",
+    //TileMap map;
+    if (!mazeMap.load("assets/maze32.png",
                   {mazeMap.tileSize, mazeMap.tileSize},
                   mazeMap.tiles.data(),
                   mazeMap.width,
@@ -105,7 +105,7 @@ int main()
 
         window.clear(); 
 
-        window.draw(map);
+        window.draw(mazeMap);
         window.draw(currTile);
         window.draw(tileX);
         window.draw(tileY);
