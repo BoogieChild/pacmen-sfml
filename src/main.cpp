@@ -10,8 +10,9 @@
 #include <iostream>
 #include <string>
 
+#include "Entity.h"
 #include "TileMap.h"
-#include "MazeCharacter.h"
+//#include "MazeCharacter.h"
 
 int main()
 {
@@ -94,7 +95,10 @@ int main()
 
     float pacmanSpeed = 5;
 
-    MazeCharacter pacman("assets/pink_pac_man_movement48.png", mazeMap);
+    //MazeCharacter pacman("assets/pink_pac_man_movement48.png", mazeMap);
+
+    Entity pacman;
+    pacman.loadTexture("assets/pink_pac_man_movement48.png", {48, 48}, 5);
 
     while (window.isOpen())
     {
@@ -123,7 +127,7 @@ int main()
         window.draw(movementDirText);
         window.draw(movementDir);
 
-        //window.draw(pacman);
+        window.draw(pacman);
 
         pacmanCenter = {pinkPacmanSpriteOne.getPosition().x + 16.0f, pinkPacmanSpriteOne.getPosition().y + 16.0f};
 

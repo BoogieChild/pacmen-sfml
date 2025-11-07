@@ -12,6 +12,7 @@
 #include "TileMap.h"
 
 enum class MovementDir {
+    STATIC,
     UP,
     DOWN,
     LEFT,
