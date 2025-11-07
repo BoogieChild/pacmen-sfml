@@ -97,7 +97,7 @@ int main()
 
     //MazeCharacter pacman("assets/pink_pac_man_movement48.png", mazeMap);
 
-    Entity pacman;
+    Entity pacman(mazeMap);
     pacman.loadTexture("assets/pink_pac_man_movement48.png", {48, 48}, 5);
 
     while (window.isOpen())
@@ -181,7 +181,7 @@ int main()
 
         sf::Vector2f pacmanVeloFloat = {pacmanVelo.x * 1.0f, pacmanVelo.y * 1.0f};
         pinkPacmanSpriteOne.move(pacmanSpeed * pacmanVeloFloat);
-        //pacman.move(pacmanSpeed * pacmanVeloFloat);
+        pacman.move(pacmanSpeed * pacmanVeloFloat);
 
         window.display();
     }
