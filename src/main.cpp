@@ -9,6 +9,7 @@
 #include <cmath>
 #include <iostream>
 #include <string>
+
 #include "TileMap.h"
 #include "MazeCharacter.h"
 

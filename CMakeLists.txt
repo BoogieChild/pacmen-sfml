@@ -20,6 +20,6 @@ FetchContent_Declare(json
 
 FetchContent_MakeAvailable(SFML json)
 
-add_executable(main src/main.cpp)
+add_executable(main src/main.cpp src/TileMap.cpp)
 target_compile_features(main PRIVATE cxx_std_17)
 target_link_libraries(main PRIVATE SFML::Graphics nlohmann_json::nlohmann_json)
