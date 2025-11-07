@@ -10,6 +10,7 @@
 #include <iostream>
 #include <string>
 #include "TileMap.h"
+#include "MazeCharacter.h"
 
 int main()
 {
@@ -22,7 +23,6 @@ int main()
         return -1;
     }
 
-    //TileMap map;
     if (!mazeMap.load("assets/maze32.png",
                   {mazeMap.tileSize, mazeMap.tileSize},
                   mazeMap.tiles.data(),
@@ -93,6 +93,8 @@ int main()
 
     float pacmanSpeed = 5;
 
+    MazeCharacter pacman("assets/pink_pac_man_movement48.png", mazeMap);
+
     while (window.isOpen())
     {
         while (const std::optional event = window.pollEvent())
@@ -119,6 +121,8 @@ int main()
         window.draw(tileId);
         window.draw(movementDirText);
         window.draw(movementDir);
+
+        window.draw(pacman);
 
         pacmanCenter = {pinkPacmanSpriteOne.getPosition().x + 16.0f, pinkPacmanSpriteOne.getPosition().y + 16.0f};
 
@@ -172,6 +176,7 @@ int main()
 
         sf::Vector2f pacmanVeloFloat = {pacmanVelo.x * 1.0f, pacmanVelo.y * 1.0f};
         pinkPacmanSpriteOne.move(pacmanSpeed * pacmanVeloFloat);
+        pacman.move(pacmanSpeed * pacmanVeloFloat);
 
         window.display();
     }

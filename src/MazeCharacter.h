@@ -1,7 +1,10 @@
 #ifndef MAZECHARACTER_H
 #define MAZECHARACTER_H
 
+#include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Rect.hpp>
+#include <SFML/Graphics/RenderStates.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/System/Vector2.hpp>
@@ -15,35 +18,40 @@ enum class MovementDir {
     RIGHT
 };
 
-class MazeCharacter {
+class MazeCharacter : public sf::Transformable, public sf::Drawable {
 public:
-    MazeCharacter(sf::Texture texture, int tileSize = 32, int baseMovementSpeed = 0) : tileSize(tileSize), baseMovementSpeed(baseMovementSpeed) {
-        sf::Sprite characterSprite(texture);
-    };
-
-    MazeCharacter(sf::Texture texture, sf::IntRect boundingRect, int tileSize = 32, int baseMovementSpeed = 0) : tileSize(tileSize), baseMovementSpeed(baseMovementSpeed) {
-        sf::Sprite characterSprite(texture, boundingRect);
+    MazeCharacter(const std::filesystem::path& textureFile, TileMap& map, int tileSize = 32, int baseMovementSpeed = 5) : tileSize(tileSize), baseMovementSpeed(baseMovementSpeed), texture(textureFile), mazeMap(map) {
+        sprite = new sf::Sprite(texture);
     };
 
     void changeDirection(MovementDir dir) {
         switch (dir) {
             case MovementDir::UP:
                 veloDir = transformVeloUp;
+                break;
             case MovementDir::DOWN:
                 veloDir = transformVeloDown;
+                break;
             case MovementDir::LEFT:
                 veloDir = transformVeloLeft;
+                break;
             case MovementDir::RIGHT:
                 veloDir = transformVeloRight;
+                break;
         };
     };
 
-
-    
+    ~MazeCharacter() {
+        delete sprite;
+    }
 
 private:
     int tileSize = 0;
     int halfTileSize = tileSize / 2;
+    std::vector<int> legalTileIds;
+
+    sf::Texture texture;
+    sf::Sprite* sprite;
 
     sf::Vector2i tilePos;
     sf::Vector2f screenPos;
@@ -61,7 +69,10 @@ private:
 
     TileMap mazeMap;
 
-
+    void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
+        states.transform *= getTransform();  // Apply MazeCharacter's transform
+        target.draw(*sprite, states);
+    };
 };
 
 #endif
