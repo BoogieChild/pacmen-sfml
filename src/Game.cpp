@@ -11,7 +11,7 @@ void Game::run() {
     MazeMap map;
     Entity pacman;
 
-    resources.loadTexture("all_textures", "assets/all_textures.png");
+    resources.loadTexture("all_textures", "assets/all_textures_transparent.png");
     // resize all_textures to 32px
     resources.resizeTexture("all_textures", 32);
     // Collision data: 1=wall, 0=path
@@ -29,7 +29,13 @@ void Game::run() {
                  {912, 0},
                  {0, 0});
 
-    pacman.setAnimationTiles(resources.getTexture("all_textures"), {1820, 0}, "right_walking", {60, 60}, 2, 0);
+    pacman.setAnimationTiles(resources.getTexture("all_textures"), {1824, 0}, "right_walking", {60, 60}, 2, 0);
+    pacman.setAnimationTiles(resources.getTexture("all_textures"), {1824, 64}, "left_walking", {60, 60}, 2, 0);
+    pacman.setAnimationTiles(resources.getTexture("all_textures"), {1824, 128}, "up_walking", {60, 60}, 2, 0);
+    pacman.setAnimationTiles(resources.getTexture("all_textures"), {1824, 192}, "down_walking", {60, 60}, 2, 0);
+    pacman.setAnimationTiles(resources.getTexture("all_textures"), {1952, 0}, "static", {60, 60}, 1, 0);
+    pacman.setAnimationTiles(resources.getTexture("all_textures"), {2016, 0}, "death", {60, 60}, 11, 4);
+
     pacman.setActiveSprite("right_walking", 0);
 
     auto window = sf::RenderWindow(sf::VideoMode(windowRes), windowName);
@@ -48,6 +54,26 @@ void Game::run() {
         window.clear(); 
 
         window.draw(map);
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)) {
+            pacman.setActiveSprite("up_walking", 0);
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {
+            pacman.setActiveSprite("left_walking", 0);
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)|| sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)) {
+            pacman.setActiveSprite("down_walking", 0);
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
+            pacman.setActiveSprite("right_walking", 0);
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q)) {
+            pacman.setActiveSprite("static", 0);
+        }
 
         window.draw(*pacman.getActiveSprite());
 
