@@ -1,6 +1,7 @@
 #ifndef RESOURCEMANAGER_H
 #define RESOURCEMANAGER_H
 
+#include <SFML/Audio/SoundBuffer.hpp>
 #include <SFML/Graphics/Font.hpp>
 #include <map>
 #include <vector>
@@ -22,7 +23,7 @@ public:
 
     bool loadMap(const std::string& mapName, const std::filesystem::path& mapPath);
 
-    //bool loadSound(const std::filesystem::path& soundPath);
+    bool loadSound(const std::string& soundName, const std::filesystem::path& soundPath);
 
     sf::Texture& getTexture(const std::string& textureName) {
         return *textures[textureName];
@@ -38,6 +39,10 @@ public:
         return pelletMap;
     }
 
+    sf::SoundBuffer* getSound(const std::string& soundName) {
+        return &sounds[soundName];
+    };
+
     //load gameplay info
 
 private:
@@ -49,7 +54,7 @@ private:
     std::map<std::string, sf::Font> fonts;
 
     //sounds
-    //std::map<std::string, sf::SoundBuffer> sounds;
+    std::map<std::string, sf::SoundBuffer> sounds;
 
     //map 
     std::vector<int> mazeMap;

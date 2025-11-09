@@ -1,5 +1,6 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <iostream>
+#include <SFML/Audio.hpp>
 
 #include "Game.h"
 #include "MazeMap.h"
@@ -18,6 +19,31 @@ void Game::run() {
     resources.loadMap("mazeMap", "assets/game/maze.txt");
     // Pellet data: 0=none, 1=pellet, 2=power
     resources.loadMap("pelletMap", "assets/game/pellets.txt");
+
+    resources.loadSound("credit", "assets/sounds/credit.wav");
+    resources.loadSound("death_0", "assets/sounds/death_0.wav");
+    resources.loadSound("death_1", "assets/sounds/death_1.wav");
+    resources.loadSound("eat_dot_0", "assets/sounds/eat_dot_0.wav");
+    resources.loadSound("eat_dot_1", "assets/sounds/eat_dot_1.wav");
+    resources.loadSound("eat_fruit", "assets/sounds/eat_fruit.wav");
+    resources.loadSound("eat_ghost", "assets/sounds/eat_ghost.wav");
+    resources.loadSound("extend", "assets/sounds/extend.wav");
+    resources.loadSound("eyes", "assets/sounds/eyes.wav");
+    resources.loadSound("eyes_firstloop", "assets/sounds/eyes_firstloop.wav");
+    resources.loadSound("fright", "assets/sounds/fright.wav");
+    resources.loadSound("fright_firstloop", "assets/sounds/fright_firstloop.wav");
+    resources.loadSound("intermission.wav", "assets/sounds/intermission.wav");
+    resources.loadSound("siren0", "assets/sounds/siren0.wav");
+    resources.loadSound("siren0_firstloop", "assets/sounds/siren0_firstloop.wav");
+    resources.loadSound("siren1", "assets/sounds/siren1.wav");
+    resources.loadSound("siren1_firstloop", "assets/sounds/siren1_firstloop.wav");
+    resources.loadSound("siren2", "assets/sounds/siren2.wav");
+    resources.loadSound("siren2_firstloop", "assets/sounds/siren2_firstloop.wav");
+    resources.loadSound("siren3", "assets/sounds/siren3.wav");
+    resources.loadSound("siren3_firstloop", "assets/sounds/siren3_firstloop.wav");
+    resources.loadSound("siren4", "assets/sounds/siren4.wav");
+    resources.loadSound("siren4_firstloop", "assets/sounds/siren4_firstloop.wav");
+    resources.loadSound("start", "assets/sounds/start.wav");
 
     // Texture layout: [Pellet Maze Image] + gap (16px) + [Base Maze Image]
     // Original: 224px (28*8) + 4px gap at 8px tiles
@@ -70,6 +96,9 @@ void Game::run() {
 
     auto window = sf::RenderWindow(sf::VideoMode(windowRes), windowName);
     window.setFramerateLimit(maxFPS);
+
+    sf::Sound sound(*resources.getSound("start"));
+    sound.play();
 
     while (window.isOpen())
     {

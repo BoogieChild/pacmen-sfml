@@ -1,5 +1,6 @@
 #include "ResourceManager.h"
 #include "MazeMap.h"
+#include <SFML/Audio/SoundBuffer.hpp>
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
@@ -43,6 +44,13 @@ bool ResourceManager::loadMap(const std::string& mapName, const std::filesystem:
 
     return !mapData.empty();
 };
+
+bool ResourceManager::loadSound(const std::string& soundName, const std::filesystem::path& soundPath) {
+    sounds[soundName] = sf::SoundBuffer(soundPath);
+
+    return true;
+};
+
 
 void ResourceManager::resizeTexture(const std::string& textureName, unsigned int newTextureTileSize) {
     auto it = textures.find(textureName);
