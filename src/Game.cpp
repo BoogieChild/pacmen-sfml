@@ -9,7 +9,6 @@
 void Game::run() {
     ResourceManager resources;
     MazeMap map;
-    Entity pacman;
 
     resources.loadTexture("all_textures", "assets/all_textures_transparent.png");
     // resize all_textures to 32px
@@ -29,14 +28,47 @@ void Game::run() {
                  {912, 0},
                  {0, 0});
 
+    Entity pacman;
+
     pacman.setAnimationTiles(resources.getTexture("all_textures"), {1824, 0}, "right_walking", {60, 60}, 2, 0);
     pacman.setAnimationTiles(resources.getTexture("all_textures"), {1824, 64}, "left_walking", {60, 60}, 2, 0);
     pacman.setAnimationTiles(resources.getTexture("all_textures"), {1824, 128}, "up_walking", {60, 60}, 2, 0);
     pacman.setAnimationTiles(resources.getTexture("all_textures"), {1824, 192}, "down_walking", {60, 60}, 2, 0);
     pacman.setAnimationTiles(resources.getTexture("all_textures"), {1952, 0}, "static", {60, 60}, 1, 0);
     pacman.setAnimationTiles(resources.getTexture("all_textures"), {2016, 0}, "death", {60, 60}, 11, 4);
+    pacman.setActiveSprite("static", 0);
 
-    pacman.setActiveSprite("right_walking", 0);
+    Entity blinky;
+
+    blinky.setAnimationTiles(resources.getTexture("all_textures"), {1824, 256}, "right_walking", {60, 60}, 2, 4);
+    blinky.setAnimationTiles(resources.getTexture("all_textures"), {1952, 256}, "left_walking", {60, 60}, 2, 4);
+    blinky.setAnimationTiles(resources.getTexture("all_textures"), {2080, 256}, "up_walking", {60, 60}, 2, 4);
+    blinky.setAnimationTiles(resources.getTexture("all_textures"), {2208, 256}, "down_walking", {60, 60}, 2, 4);
+    blinky.setActiveSprite("right_walking", 0);
+
+    Entity pinky;
+
+    pinky.setAnimationTiles(resources.getTexture("all_textures"), {1824, 320}, "right_walking", {60, 60}, 2, 4);
+    pinky.setAnimationTiles(resources.getTexture("all_textures"), {1952, 320}, "left_walking", {60, 60}, 2, 4);
+    pinky.setAnimationTiles(resources.getTexture("all_textures"), {2080, 320}, "up_walking", {60, 60}, 2, 4);
+    pinky.setAnimationTiles(resources.getTexture("all_textures"), {2208, 320}, "down_walking", {60, 60}, 2, 4);
+    pinky.setActiveSprite("right_walking", 0);
+
+    Entity inky;
+
+    inky.setAnimationTiles(resources.getTexture("all_textures"), {1824, 384}, "right_walking", {60, 60}, 2, 4);
+    inky.setAnimationTiles(resources.getTexture("all_textures"), {1952, 384}, "left_walking", {60, 60}, 2, 4);
+    inky.setAnimationTiles(resources.getTexture("all_textures"), {2080, 384}, "up_walking", {60, 60}, 2, 4);
+    inky.setAnimationTiles(resources.getTexture("all_textures"), {2208, 384}, "down_walking", {60, 60}, 2, 4);
+    inky.setActiveSprite("right_walking", 0);
+
+    Entity clyde;
+
+    clyde.setAnimationTiles(resources.getTexture("all_textures"), {1824, 448}, "right_walking", {60, 60}, 2, 4);
+    clyde.setAnimationTiles(resources.getTexture("all_textures"), {1952, 448}, "left_walking", {60, 60}, 2, 4);
+    clyde.setAnimationTiles(resources.getTexture("all_textures"), {2080, 448}, "up_walking", {60, 60}, 2, 4);
+    clyde.setAnimationTiles(resources.getTexture("all_textures"), {2208, 448}, "down_walking", {60, 60}, 2, 4);
+    clyde.setActiveSprite("right_walking", 0);
 
     auto window = sf::RenderWindow(sf::VideoMode(windowRes), windowName);
     window.setFramerateLimit(maxFPS);
