@@ -35,22 +35,28 @@ void Entity::setActiveSprite(const std::string& animationName, int animationTile
     for (auto& animation : animations) {
          if (animation.name == animationName) {
             activeSprite = &animation.sprites.at(animationTile);
+            activeSprite->setPosition(this->getPosition());
             return;
         }
     }
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+void Entity::move(MovementDir dir) {
+    switch (dir) {
+        case MovementDir::UP:
+            activeSprite->move(movementSpeed.componentWiseMul({0, -1}));
+            this->setPosition(activeSprite->getPosition());
+        case MovementDir::DOWN:
+            activeSprite->move(movementSpeed.componentWiseMul({0, 1}));
+            this->setPosition(activeSprite->getPosition());
+        case MovementDir::LEFT:
+            activeSprite->move(movementSpeed.componentWiseMul({-1, 0}));
+            this->setPosition(activeSprite->getPosition());
+        case MovementDir::RIGHT:
+            activeSprite->move(movementSpeed.componentWiseMul({1, 0}));
+            this->setPosition(activeSprite->getPosition());
+        case MovementDir::STATIC:
+            activeSprite->move(movementSpeed.componentWiseMul({0, 0}));
+            this->setPosition(activeSprite->getPosition());
+    };
+};
