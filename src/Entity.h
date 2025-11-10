@@ -41,6 +41,8 @@ public:
 
     void move(MovementDir dir);
 
+    sf::Vector2f getMovementSpeed() const { return movementSpeed; }
+
 protected:
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 

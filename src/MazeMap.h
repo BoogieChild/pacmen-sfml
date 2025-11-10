@@ -1,12 +1,12 @@
 #ifndef MAZEMAP_H
 #define MAZEMAP_H
 
-#include "Entity.h"
 #include <SFML/Graphics.hpp>
 
 #include <SFML/System/Vector2.hpp>
 #include <vector>
 #include <filesystem>
+#include "Entity.h"
 
 class MazeMap : public sf::Drawable, public sf::Transformable {
 public:

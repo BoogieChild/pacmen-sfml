@@ -113,28 +113,27 @@ sf::Vector2i MazeMap::getTileCoords(sf::Vector2f screenPos) {
 };
 
 bool MazeMap::entityCanMove(Entity& entity, MovementDir dir) {
-    sf::Vector2i coords = getTileCoords(entity.getPosition());
-
-    int xTile = coords.x;
-    int yTile = coords.y;
+    sf::Vector2f currentPos = entity.getPosition();
+    sf::Vector2f newPos = currentPos;
+    sf::Vector2f movementSpeed = entity.getMovementSpeed();
 
     switch (dir) {
         case MovementDir::UP:
-            return !isWall(xTile, yTile - 1);
+            newPos.y -= movementSpeed.y;
             break;
         case MovementDir::DOWN:
-            return !isWall(xTile, yTile + 1);
+            newPos.y += movementSpeed.y;
             break;
         case MovementDir::LEFT:
-            return !isWall(xTile - 1, yTile);
+            newPos.x -= movementSpeed.x;
             break;
         case MovementDir::RIGHT:
-            return !isWall(xTile + 1, yTile);
+            newPos.x += movementSpeed.x;
             break;
         case MovementDir::STATIC:
             return true;
-            break;
     };
 
-    return false;
+    sf::Vector2i newTileCoords = getTileCoords(newPos);
+    return !isWall(newTileCoords.x, newTileCoords.y);
 };
