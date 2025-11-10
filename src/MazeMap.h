@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <SFML/System/Vector2.hpp>
 #include <vector>
 #include <filesystem>
 
@@ -25,6 +26,8 @@ public:
 
     int convert2DCoords(int x, int y) const { return x + y * width; }
     bool isLegalTile(int x, int y) const;
+
+    sf::Vector2i getTileCoords(sf::Vector2f screenPos);
 
     unsigned int getWidth() const { return width; }
     unsigned int getHeight() const { return height; }

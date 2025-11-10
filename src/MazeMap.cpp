@@ -1,4 +1,5 @@
 #include "MazeMap.h"
+#include <SFML/System/Vector2.hpp>
 
 bool MazeMap::loadMaze(const std::vector<int>& collisionData,
                        const std::vector<int>& pelletData,
@@ -102,3 +103,12 @@ void MazeMap::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 
     target.draw(pelletVertices, states);
 }
+
+// assumes maze is drawn at 0,0
+sf::Vector2i MazeMap::getTileCoords(sf::Vector2f screenPos) {
+    int tileX = static_cast<int>(screenPos.x / tileSize);
+    int tileY = static_cast<int>(screenPos.y / tileSize);
+
+    return {tileX, tileY};
+};
+    
