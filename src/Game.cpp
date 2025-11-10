@@ -104,6 +104,11 @@ void Game::run() {
     sf::Sound sound(*resources.getSound("start"));
     sound.play();
 
+    sf::Sound pellet0(*resources.getSound("eat_dot_0"));
+    sf::Sound pellet1(*resources.getSound("eat_dot_1"));
+
+    int pelletSoundCount = 0;
+
     while (window.isOpen())
     {
         while (const std::optional event = window.pollEvent())
@@ -177,6 +182,14 @@ void Game::run() {
 
         if (map.hasPellet(currentPacmanTile.x, currentPacmanTile.y)) {
             map.eatPellet(currentPacmanTile.x, currentPacmanTile.y);
+
+            if (pelletSoundCount % 2) {
+                pellet0.play();
+            } else {
+                pellet1.play();
+            }
+
+            pelletSoundCount++;
         }
 
         window.clear();
