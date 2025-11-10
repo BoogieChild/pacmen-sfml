@@ -118,22 +118,30 @@ void Game::run() {
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)) {
             pacman.setActiveSprite("up_walking", 0);
-            pacman.move(MovementDir::UP);
+
+            if (map.entityCanMove(pacman, MovementDir::UP))
+                pacman.move(MovementDir::UP);
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {
             pacman.setActiveSprite("left_walking", 0);
-            pacman.move(MovementDir::LEFT);
+
+            if (map.entityCanMove(pacman, MovementDir::LEFT))
+                pacman.move(MovementDir::LEFT);
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)|| sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)) {
             pacman.setActiveSprite("down_walking", 0);
-            pacman.move(MovementDir::DOWN);
+
+            if (map.entityCanMove(pacman, MovementDir::DOWN))
+                pacman.move(MovementDir::DOWN);
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
             pacman.setActiveSprite("right_walking", 0);
-            pacman.move(MovementDir::RIGHT);
+
+            if (map.entityCanMove(pacman, MovementDir::RIGHT))
+                pacman.move(MovementDir::RIGHT);
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q)) {

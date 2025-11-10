@@ -1,6 +1,7 @@
 #ifndef MAZEMAP_H
 #define MAZEMAP_H
 
+#include "Entity.h"
 #include <SFML/Graphics.hpp>
 
 #include <SFML/System/Vector2.hpp>
@@ -26,6 +27,8 @@ public:
 
     int convert2DCoords(int x, int y) const { return x + y * width; }
     bool isLegalTile(int x, int y) const;
+
+    bool entityCanMove(Entity& entity, MovementDir dir);
 
     sf::Vector2i getTileCoords(sf::Vector2f screenPos);
 
