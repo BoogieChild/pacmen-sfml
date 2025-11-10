@@ -112,28 +112,73 @@ sf::Vector2i MazeMap::getTileCoords(sf::Vector2f screenPos) {
     return {tileX, tileY};
 };
 
+sf::Vector2f MazeMap::getTargetTileCenter(sf::Vector2i tileCoords) const {
+    float halfTile = tileSize / 2.0f;
+    return sf::Vector2f(tileCoords.x * tileSize + halfTile,
+                        tileCoords.y * tileSize + halfTile);
+};
+
+bool MazeMap::isEntityCentered(const Entity& entity) const {
+    sf::Vector2f pos = entity.getPosition();
+    float halfTile = tileSize / 2.0f;
+
+    sf::Vector2i tileCoords = const_cast<MazeMap*>(this)->getTileCoords(pos);
+    sf::Vector2f tileCenter(tileCoords.x * tileSize + halfTile,
+                             tileCoords.y * tileSize + halfTile);
+
+    float dx = std::abs(pos.x - tileCenter.x);
+    float dy = std::abs(pos.y - tileCenter.y);
+
+    return dx < 1.0f && dy < 1.0f;
+}
+
+void MazeMap::snapEntityToGrid(Entity& entity) {
+    sf::Vector2f pos = entity.getPosition();
+    float halfTile = tileSize / 2.0f;
+
+    sf::Vector2i tileCoords = getTileCoords(pos);
+    sf::Vector2f tileCenter(tileCoords.x * tileSize + halfTile,
+                             tileCoords.y * tileSize + halfTile);
+
+    entity.setPosition(tileCenter);
+}
+
 bool MazeMap::entityCanMove(Entity& entity, MovementDir dir) {
     sf::Vector2f currentPos = entity.getPosition();
-    sf::Vector2f newPos = currentPos;
-    sf::Vector2f movementSpeed = entity.getMovementSpeed();
+    sf::Vector2i currentTile = getTileCoords(currentPos);
+
+    if (dir == MovementDir::UP || dir == MovementDir::DOWN) {
+        float halfTile = tileSize / 2.0f;
+        float tileCenterX = currentTile.x * tileSize + halfTile;
+        if (std::abs(currentPos.x - tileCenterX) > 1.0f) {
+            return false;
+        }
+    } else if (dir == MovementDir::LEFT || dir == MovementDir::RIGHT) {
+        float halfTile = tileSize / 2.0f;
+        float tileCenterY = currentTile.y * tileSize + halfTile;
+        if (std::abs(currentPos.y - tileCenterY) > 1.0f) {
+            return false;
+        }
+    }
+
+    sf::Vector2i targetTile = currentTile;
 
     switch (dir) {
         case MovementDir::UP:
-            newPos.y -= movementSpeed.y;
+            targetTile.y -= 1;
             break;
         case MovementDir::DOWN:
-            newPos.y += movementSpeed.y;
+            targetTile.y += 1;
             break;
         case MovementDir::LEFT:
-            newPos.x -= movementSpeed.x;
+            targetTile.x -= 1;
             break;
         case MovementDir::RIGHT:
-            newPos.x += movementSpeed.x;
+            targetTile.x += 1;
             break;
         case MovementDir::STATIC:
             return true;
     };
 
-    sf::Vector2i newTileCoords = getTileCoords(newPos);
-    return !isWall(newTileCoords.x, newTileCoords.y);
+    return !isWall(targetTile.x, targetTile.y);
 };

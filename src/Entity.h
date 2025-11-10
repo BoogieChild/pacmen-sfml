@@ -31,7 +31,11 @@ struct EntityAnimation {
 
 class Entity : public sf::Transformable, public sf::Drawable {
 public:
-    Entity() : movementSpeed({5.0f, 5.0f}) {};
+    Entity() : movementSpeed({5.0f, 5.0f}),
+               currentDirection(MovementDir::STATIC),
+               queuedDirection(MovementDir::STATIC),
+               targetPosition(std::nullopt),
+               isMoving(false) {};
 
     void setAnimationTiles(sf::Texture& textureSheet, sf::Vector2i pixelLocation, const std::string& animationName, sf::Vector2i tileSize, unsigned int animationTiles, unsigned int pixelGap);
 
@@ -39,7 +43,19 @@ public:
 
     void setActiveSprite(const std::string& animationName, int animationTile);
 
-    void move(MovementDir dir);
+    void startMove(MovementDir dir, sf::Vector2f target);
+
+    void update();
+
+    void queueDirection(MovementDir dir) { queuedDirection = dir; }
+
+    MovementDir getQueuedDirection() const { return queuedDirection; }
+
+    void clearQueuedDirection() { queuedDirection = MovementDir::STATIC; }
+
+    bool isCurrentlyMoving() const { return isMoving; }
+
+    MovementDir getCurrentDirection() const { return currentDirection; }
 
     sf::Vector2f getMovementSpeed() const { return movementSpeed; }
 
@@ -53,6 +69,14 @@ protected:
     sf::Sprite* activeSprite;
 
     sf::Vector2f movementSpeed;
+
+    MovementDir currentDirection;
+
+    MovementDir queuedDirection;
+
+    std::optional<sf::Vector2f> targetPosition;
+
+    bool isMoving;
 };
 
 #endif

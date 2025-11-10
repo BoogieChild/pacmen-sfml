@@ -113,47 +113,68 @@ void Game::run() {
             }
         }
 
-        window.clear(); 
-
-        window.draw(map);
-
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)) {
-            pacman.setActiveSprite("up_walking", 0);
-
-            if (map.entityCanMove(pacman, MovementDir::UP))
-                pacman.move(MovementDir::UP);
+            pacman.queueDirection(MovementDir::UP);
+        } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {
+            pacman.queueDirection(MovementDir::LEFT);
+        } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)|| sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)) {
+            pacman.queueDirection(MovementDir::DOWN);
+        } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
+            pacman.queueDirection(MovementDir::RIGHT);
+        } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q)) {
+            pacman.queueDirection(MovementDir::STATIC);
         }
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {
-            pacman.setActiveSprite("left_walking", 0);
+        if (!pacman.isCurrentlyMoving()) {
+            MovementDir nextDir = MovementDir::STATIC;
 
-            if (map.entityCanMove(pacman, MovementDir::LEFT))
-                pacman.move(MovementDir::LEFT);
+            MovementDir queued = pacman.getQueuedDirection();
+            if (queued != MovementDir::STATIC && map.entityCanMove(pacman, queued)) {
+                nextDir = queued;
+                pacman.clearQueuedDirection();
+            }
+            else if (pacman.getCurrentDirection() != MovementDir::STATIC &&
+                     map.entityCanMove(pacman, pacman.getCurrentDirection())) {
+                nextDir = pacman.getCurrentDirection();
+            }
+
+            if (nextDir != MovementDir::STATIC) {
+                sf::Vector2i currentTile = map.getTileCoords(pacman.getPosition());
+                sf::Vector2i targetTile = currentTile;
+
+                switch (nextDir) {
+                    case MovementDir::UP:
+                        targetTile.y -= 1;
+                        pacman.setActiveSprite("up_walking", 0);
+                        break;
+                    case MovementDir::DOWN:
+                        targetTile.y += 1;
+                        pacman.setActiveSprite("down_walking", 0);
+                        break;
+                    case MovementDir::LEFT:
+                        targetTile.x -= 1;
+                        pacman.setActiveSprite("left_walking", 0);
+                        break;
+                    case MovementDir::RIGHT:
+                        targetTile.x += 1;
+                        pacman.setActiveSprite("right_walking", 0);
+                        break;
+                    case MovementDir::STATIC:
+                        break;
+                }
+
+                sf::Vector2f targetCenter = map.getTargetTileCenter(targetTile);
+                pacman.startMove(nextDir, targetCenter);
+            } else {
+                pacman.setActiveSprite("static", 0);
+            }
         }
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)|| sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)) {
-            pacman.setActiveSprite("down_walking", 0);
+        pacman.update();
 
-            if (map.entityCanMove(pacman, MovementDir::DOWN))
-                pacman.move(MovementDir::DOWN);
-        }
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
-            pacman.setActiveSprite("right_walking", 0);
-
-            if (map.entityCanMove(pacman, MovementDir::RIGHT))
-                pacman.move(MovementDir::RIGHT);
-        }
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q)) {
-            pacman.setActiveSprite("static", 0);
-            pacman.move(MovementDir::STATIC);
-        }
-
+        window.clear();
+        window.draw(map);
         window.draw(pacman);
-
-        //window.draw();
-
         window.display();
     }
 

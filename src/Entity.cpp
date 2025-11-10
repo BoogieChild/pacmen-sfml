@@ -5,9 +5,7 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Vertex.hpp>
 #include <SFML/System/Vector2.hpp>
-#include <cstddef>
-#include <filesystem>
-#include <iostream>
+#include <cmath>
 
 void Entity::setAnimationTiles(sf::Texture& textureSheet, 
                                sf::Vector2i pixelLocation, 
@@ -47,21 +45,59 @@ void Entity::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     }
 }
 
-void Entity::move(MovementDir dir) {
-    switch (dir) {
+void Entity::startMove(MovementDir dir, sf::Vector2f target) {
+    currentDirection = dir;
+    targetPosition = target;
+    isMoving = true;
+}
+
+void Entity::update() {
+    if (!isMoving || !targetPosition.has_value()) {
+        return;
+    }
+
+    sf::Vector2f currentPos = getPosition();
+    sf::Vector2f target = targetPosition.value();
+
+    sf::Vector2f direction = target - currentPos;
+    float distance = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+
+    if (distance < 1.0f) {
+        setPosition(target);
+        isMoving = false;
+        targetPosition = std::nullopt;
+        return;
+    }
+
+    sf::Vector2f movement(0.0f, 0.0f);
+    switch (currentDirection) {
         case MovementDir::UP:
-            Transformable::move({0, -movementSpeed.y});
+            movement.y = -movementSpeed.y;
+            if (currentPos.y + movement.y < target.y) {
+                movement.y = target.y - currentPos.y;
+            }
             break;
         case MovementDir::DOWN:
-            Transformable::move({0, movementSpeed.y});
+            movement.y = movementSpeed.y;
+            if (currentPos.y + movement.y > target.y) {
+                movement.y = target.y - currentPos.y;
+            }
             break;
         case MovementDir::LEFT:
-            Transformable::move({-movementSpeed.x, 0});
+            movement.x = -movementSpeed.x;
+            if (currentPos.x + movement.x < target.x) {
+                movement.x = target.x - currentPos.x;
+            }
             break;
         case MovementDir::RIGHT:
-            Transformable::move({movementSpeed.x, 0});
+            movement.x = movementSpeed.x;
+            if (currentPos.x + movement.x > target.x) {
+                movement.x = target.x - currentPos.x;
+            }
             break;
         case MovementDir::STATIC:
             break;
-    };
+    }
+
+    Transformable::move(movement);
 };

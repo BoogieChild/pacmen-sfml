@@ -30,7 +30,13 @@ public:
 
     bool entityCanMove(Entity& entity, MovementDir dir);
 
+    sf::Vector2f getTargetTileCenter(sf::Vector2i tileCoords) const;
+
     sf::Vector2i getTileCoords(sf::Vector2f screenPos);
+
+    bool isEntityCentered(const Entity& entity) const;
+
+    void snapEntityToGrid(Entity& entity);
 
     unsigned int getWidth() const { return width; }
     unsigned int getHeight() const { return height; }
