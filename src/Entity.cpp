@@ -35,33 +35,33 @@ void Entity::setActiveSprite(const std::string& animationName, int animationTile
     for (auto& animation : animations) {
          if (animation.name == animationName) {
             activeSprite = &animation.sprites.at(animationTile);
-            activeSprite->setPosition(this->getPosition());
             return;
         }
     }
 };
 
+void Entity::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+    states.transform *= getTransform();
+    if (activeSprite) {
+        target.draw(*activeSprite, states);
+    }
+}
+
 void Entity::move(MovementDir dir) {
     switch (dir) {
         case MovementDir::UP:
-            activeSprite->move(movementSpeed.componentWiseMul({0, -1}));
-            this->setPosition(activeSprite->getPosition());
+            Transformable::move({0, -movementSpeed.y});
             break;
         case MovementDir::DOWN:
-            activeSprite->move(movementSpeed.componentWiseMul({0, 1}));
-            this->setPosition(activeSprite->getPosition());
+            Transformable::move({0, movementSpeed.y});
             break;
         case MovementDir::LEFT:
-            activeSprite->move(movementSpeed.componentWiseMul({-1, 0}));
-            this->setPosition(activeSprite->getPosition());
+            Transformable::move({-movementSpeed.x, 0});
             break;
         case MovementDir::RIGHT:
-            activeSprite->move(movementSpeed.componentWiseMul({1, 0}));
-            this->setPosition(activeSprite->getPosition());
+            Transformable::move({movementSpeed.x, 0});
             break;
         case MovementDir::STATIC:
-            activeSprite->move(movementSpeed.componentWiseMul({0, 0}));
-            this->setPosition(activeSprite->getPosition());
             break;
     };
 };

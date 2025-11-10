@@ -30,7 +30,7 @@ struct EntityAnimation {
     std::vector<sf::Sprite> sprites;
 };
 
-class Entity : public sf::Transformable {
+class Entity : public sf::Transformable, public sf::Drawable {
 public:
     Entity() : movementSpeed({5.0f, 5.0f}) {};
 
@@ -43,6 +43,8 @@ public:
     void move(MovementDir dir);
 
 protected:
+    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
     sf::Vector2i tileSize;
 
     std::vector<EntityAnimation> animations;

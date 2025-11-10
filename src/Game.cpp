@@ -139,7 +139,7 @@ void Game::run() {
             pacman.move(MovementDir::STATIC);
         }
 
-        window.draw(*pacman.getActiveSprite());
+        window.draw(pacman);
 
         //window.draw();
 
