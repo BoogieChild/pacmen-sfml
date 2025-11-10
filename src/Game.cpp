@@ -1,4 +1,5 @@
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/System/Vector2.hpp>
 #include <iostream>
 #include <SFML/Audio.hpp>
 
@@ -112,6 +113,8 @@ void Game::run() {
                 window.close();
             }
         }
+        
+        sf::Vector2i currentPacmanTile = map.getTileCoords(pacman.getPosition());
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)) {
             pacman.queueDirection(MovementDir::UP);
@@ -171,6 +174,10 @@ void Game::run() {
         }
 
         pacman.update();
+
+        if (map.hasPellet(currentPacmanTile.x, currentPacmanTile.y)) {
+            map.eatPellet(currentPacmanTile.x, currentPacmanTile.y);
+        }
 
         window.clear();
         window.draw(map);
