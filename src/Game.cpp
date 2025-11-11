@@ -124,6 +124,9 @@ void Game::run() {
 
     sf::Clock clock;
 
+    const sf::Time FIXED_TIMESTEP = sf::seconds(1.0f / 60.606061f);
+    sf::Time accumulator = sf::Time::Zero;
+
     sf::Time initialGameplayPause;
 
     int score = 0;
@@ -159,84 +162,88 @@ void Game::run() {
         }
 
         sf::Time elapsedTime = clock.restart();
+        accumulator += elapsedTime;
         initialGameplayPause += elapsedTime;
 
-        sf::Vector2i currentPacmanTile = map.getTileCoords(pacman.getPosition());
+        while (accumulator >= FIXED_TIMESTEP) {
+            accumulator -= FIXED_TIMESTEP;
 
-        if (initialGameplayPause > sf::seconds(4.5f)) {
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)) {
-                pacman.queueDirection(MovementDir::UP);
-            } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {
-                pacman.queueDirection(MovementDir::LEFT);
-            } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)|| sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)) {
-                pacman.queueDirection(MovementDir::DOWN);
-            } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
-                pacman.queueDirection(MovementDir::RIGHT);
-            } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q)) {
-                pacman.queueDirection(MovementDir::STATIC);
-            }
+            if (initialGameplayPause > sf::seconds(4.5f)) {
+                sf::Vector2i currentPacmanTile = map.getTileCoords(pacman.getPosition());
 
-            if (!pacman.isCurrentlyMoving()) {
-                MovementDir nextDir = MovementDir::STATIC;
-
-                MovementDir queued = pacman.getQueuedDirection();
-                if (queued != MovementDir::STATIC && map.entityCanMove(pacman, queued)) {
-                    nextDir = queued;
-                    pacman.clearQueuedDirection();
-                }
-                else if (pacman.getCurrentDirection() != MovementDir::STATIC &&
-                         map.entityCanMove(pacman, pacman.getCurrentDirection())) {
-                    nextDir = pacman.getCurrentDirection();
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)) {
+                    pacman.queueDirection(MovementDir::UP);
+                } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {
+                    pacman.queueDirection(MovementDir::LEFT);
+                } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)|| sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)) {
+                    pacman.queueDirection(MovementDir::DOWN);
+                } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
+                    pacman.queueDirection(MovementDir::RIGHT);
+                } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q)) {
+                    pacman.queueDirection(MovementDir::STATIC);
                 }
 
-                if (nextDir != MovementDir::STATIC) {
-                    sf::Vector2i currentTile = map.getTileCoords(pacman.getPosition());
-                    sf::Vector2i targetTile = currentTile;
+                if (!pacman.isCurrentlyMoving()) {
+                    MovementDir nextDir = MovementDir::STATIC;
 
-                    switch (nextDir) {
-                        case MovementDir::UP:
-                            targetTile.y -= 1;
-                            pacman.setActiveSprite("up_walking", 0);
-                            break;
-                        case MovementDir::DOWN:
-                            targetTile.y += 1;
-                            pacman.setActiveSprite("down_walking", 0);
-                            break;
-                        case MovementDir::LEFT:
-                            targetTile.x -= 1;
-                            pacman.setActiveSprite("left_walking", 0);
-                            break;
-                        case MovementDir::RIGHT:
-                            targetTile.x += 1;
-                            pacman.setActiveSprite("right_walking", 0);
-                            break;
-                        case MovementDir::STATIC:
-                            break;
+                    MovementDir queued = pacman.getQueuedDirection();
+                    if (queued != MovementDir::STATIC && map.entityCanMove(pacman, queued)) {
+                        nextDir = queued;
+                        pacman.clearQueuedDirection();
+                    }
+                    else if (pacman.getCurrentDirection() != MovementDir::STATIC &&
+                             map.entityCanMove(pacman, pacman.getCurrentDirection())) {
+                        nextDir = pacman.getCurrentDirection();
                     }
 
-                    sf::Vector2f targetCenter = map.getTargetTileCenter(targetTile);
-                    pacman.startMove(nextDir, targetCenter);
-                } else {
-                    pacman.setActiveSprite("static", 0);
+                    if (nextDir != MovementDir::STATIC) {
+                        sf::Vector2i currentTile = map.getTileCoords(pacman.getPosition());
+                        sf::Vector2i targetTile = currentTile;
+
+                        switch (nextDir) {
+                            case MovementDir::UP:
+                                targetTile.y -= 1;
+                                pacman.setActiveSprite("up_walking", 0);
+                                break;
+                            case MovementDir::DOWN:
+                                targetTile.y += 1;
+                                pacman.setActiveSprite("down_walking", 0);
+                                break;
+                            case MovementDir::LEFT:
+                                targetTile.x -= 1;
+                                pacman.setActiveSprite("left_walking", 0);
+                                break;
+                            case MovementDir::RIGHT:
+                                targetTile.x += 1;
+                                pacman.setActiveSprite("right_walking", 0);
+                                break;
+                            case MovementDir::STATIC:
+                                break;
+                        }
+
+                        sf::Vector2f targetCenter = map.getTargetTileCenter(targetTile);
+                        pacman.startMove(nextDir, targetCenter);
+                    } else {
+                        pacman.setActiveSprite("static", 0);
+                    }
+                }
+
+                pacman.update();
+
+                if (map.hasPellet(currentPacmanTile.x, currentPacmanTile.y)) {
+                    map.eatPellet(currentPacmanTile.x, currentPacmanTile.y);
+                    score += 10;
+                    scoreText.setString(std::to_string(score));
+
+                    if (pelletSoundCount % 2) {
+                        pellet1.play();
+                    } else {
+                        pellet0.play();
+                    }
+
+                    pelletSoundCount++;
                 }
             }
-
-            pacman.update();
-
-            if (map.hasPellet(currentPacmanTile.x, currentPacmanTile.y)) {
-                map.eatPellet(currentPacmanTile.x, currentPacmanTile.y);
-                score += 10;
-                scoreText.setString(std::to_string(score));
-
-                if (pelletSoundCount % 2) {
-                    pellet1.play();
-                } else {
-                    pellet0.play();
-                }
-
-                pelletSoundCount++;
-            }
-
         }
 
         window.clear();
