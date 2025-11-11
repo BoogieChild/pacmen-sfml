@@ -83,25 +83,33 @@ void Game::run() {
     blinky.setAnimationTiles(resources.getTexture("all_textures"), {1952, 256}, "left_walking", {60, 60}, 2, 4);
     blinky.setAnimationTiles(resources.getTexture("all_textures"), {2080, 256}, "up_walking", {60, 60}, 2, 4);
     blinky.setAnimationTiles(resources.getTexture("all_textures"), {2208, 256}, "down_walking", {60, 60}, 2, 4);
-    blinky.setActiveSprite("right_walking", 0);
+    blinky.setActiveSprite("left_walking", 0);
+    blinky.setOrigin({30, 30});
+    blinky.setPosition({14.5 * 32.0f - 16.0f, 12 * 32.0f - 16.0f});
 
     pinky.setAnimationTiles(resources.getTexture("all_textures"), {1824, 320}, "right_walking", {60, 60}, 2, 4);
     pinky.setAnimationTiles(resources.getTexture("all_textures"), {1952, 320}, "left_walking", {60, 60}, 2, 4);
     pinky.setAnimationTiles(resources.getTexture("all_textures"), {2080, 320}, "up_walking", {60, 60}, 2, 4);
     pinky.setAnimationTiles(resources.getTexture("all_textures"), {2208, 320}, "down_walking", {60, 60}, 2, 4);
-    pinky.setActiveSprite("right_walking", 0);
+    pinky.setActiveSprite("down_walking", 0);
+    pinky.setOrigin({30, 30});
+    pinky.setPosition({14.5 * 32.0f - 16.0f, 15 * 32.0f - 16.0f});
 
     inky.setAnimationTiles(resources.getTexture("all_textures"), {1824, 384}, "right_walking", {60, 60}, 2, 4);
     inky.setAnimationTiles(resources.getTexture("all_textures"), {1952, 384}, "left_walking", {60, 60}, 2, 4);
     inky.setAnimationTiles(resources.getTexture("all_textures"), {2080, 384}, "up_walking", {60, 60}, 2, 4);
     inky.setAnimationTiles(resources.getTexture("all_textures"), {2208, 384}, "down_walking", {60, 60}, 2, 4);
-    inky.setActiveSprite("right_walking", 0);
+    inky.setActiveSprite("up_walking", 0);
+    inky.setOrigin({30, 30});
+    inky.setPosition({12.5 * 32.0f - 16.0f, 15 * 32.0f - 16.0f});
 
     clyde.setAnimationTiles(resources.getTexture("all_textures"), {1824, 448}, "right_walking", {60, 60}, 2, 4);
     clyde.setAnimationTiles(resources.getTexture("all_textures"), {1952, 448}, "left_walking", {60, 60}, 2, 4);
     clyde.setAnimationTiles(resources.getTexture("all_textures"), {2080, 448}, "up_walking", {60, 60}, 2, 4);
     clyde.setAnimationTiles(resources.getTexture("all_textures"), {2208, 448}, "down_walking", {60, 60}, 2, 4);
-    clyde.setActiveSprite("right_walking", 0);
+    clyde.setActiveSprite("up_walking", 0);
+    clyde.setOrigin({30, 30});
+    clyde.setPosition({16.5 * 32.0f - 16.0f, 15 * 32.0f - 16.0f});
 
     auto window = sf::RenderWindow(sf::VideoMode(windowRes), windowName);
     window.setFramerateLimit(maxFPS);
@@ -235,6 +243,10 @@ void Game::run() {
 
         window.draw(map);
         window.draw(pacman);
+        window.draw(blinky);
+        window.draw(inky);
+        window.draw(pinky);
+        window.draw(clyde);
         window.draw(scoreText);
         window.draw(pacmanLifeOne);
         window.draw(pacmanLifeTwo);
