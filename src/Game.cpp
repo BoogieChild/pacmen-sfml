@@ -78,6 +78,7 @@ void Game::run() {
     pacman.setOrigin({30, 30});
     // Tile center = tile * tileSize + tileSize/2
     pacman.setPosition({14.5 * 32.0f - 16.0f, 24 * 32.0f - 16.0f});
+    pacman.setMovementSpeed({(75.75757625 / 60.606061) * 4, (75.75757625 / 60.606061) * 4});
 
     blinky.setAnimationTiles(resources.getTexture("all_textures"), {1824, 256}, "right_walking", {60, 60}, 2, 4);
     blinky.setAnimationTiles(resources.getTexture("all_textures"), {1952, 256}, "left_walking", {60, 60}, 2, 4);

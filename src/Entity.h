@@ -59,6 +59,8 @@ public:
 
     sf::Vector2f getMovementSpeed() const { return movementSpeed; }
 
+    void setMovementSpeed(sf::Vector2f newMovementSpeed) { movementSpeed = newMovementSpeed; }
+
 protected:
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
