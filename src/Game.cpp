@@ -1,9 +1,11 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/System/Time.hpp>
 #include <SFML/System/Vector2.hpp>
+#include <fstream>
 #include <iostream>
 #include <SFML/Audio.hpp>
 #include <string>
+#include <stdexcept>
 
 #include "Game.h"
 #include "MazeMap.h"
@@ -11,13 +13,39 @@
 #include "Pacman.h"
 #include "Ghost.h"
 
+json Game::loadConfig(const std::filesystem::path& configPath) {
+    std::ifstream file(configPath);
+    if (!file.is_open()) {
+        throw std::runtime_error("Failed to open config file: " + configPath.string());
+    }
+
+    json data;
+
+    try {
+        file >> data;
+        return data;
+    } catch (const json::parse_error& e) {
+        throw std::runtime_error("JSON parse error: " + std::string(e.what()));
+    }
+}
+
+Game::Game(const std::filesystem::path& configPath) : 
+    config(loadConfig(configPath)),
+    framerate(static_cast<float>(config["gameConstants"]["frameRate"])),
+    perPixelMove(static_cast<float>(config["gameConstants"]["baseSpeedPixelsPerSecond"]) / static_cast<float>(config["gameConstants"]["frameRate"])),
+    baseTileSize(static_cast<int>(config["gameConstants"]["tileSize"]))
+{};
+
 void Game::run() {
+    const int tileSize = baseTileSize * scaleFactor;
+    const float perLoopMove = perPixelMove * scaleFactor;
+
     ResourceManager resources;
     MazeMap map;
 
     resources.loadTexture("all_textures", "assets/textures/all_textures_transparent.png");
     // resize all_textures to 32px
-    resources.resizeTexture("all_textures", 32);
+    resources.resizeTexture("all_textures", tileSize);
     // Collision data: 1=wall, 0=path
     resources.loadMap("mazeMap", "assets/game/maze.txt");
     // Pellet data: 0=none, 1=pellet, 2=power
@@ -56,7 +84,7 @@ void Game::run() {
     map.loadMaze(resources.getMazeMap(),
                  resources.getPelletMap(),
                  resources.getTexture("all_textures"),
-                 32,
+                 tileSize,
                  {912, 0},
                  {0, 0});
 
@@ -78,7 +106,7 @@ void Game::run() {
     pacman.setOrigin({30, 30});
     // Tile center = tile * tileSize + tileSize/2
     pacman.setPosition({14.5 * 32.0f - 16.0f, 24 * 32.0f - 16.0f});
-    pacman.setMovementSpeed({(75.75757625 / 60.606061) * 4, (75.75757625 / 60.606061) * 4});
+    pacman.setMovementSpeed({perLoopMove, perLoopMove});
 
     blinky.setAnimationTiles(resources.getTexture("all_textures"), {1824, 256}, "right_walking", {60, 60}, 2, 4);
     blinky.setAnimationTiles(resources.getTexture("all_textures"), {1952, 256}, "left_walking", {60, 60}, 2, 4);
@@ -113,7 +141,6 @@ void Game::run() {
     clyde.setPosition({16.5 * 32.0f - 16.0f, 15 * 32.0f - 16.0f});
 
     auto window = sf::RenderWindow(sf::VideoMode(windowRes), windowName);
-    window.setFramerateLimit(maxFPS);
 
     sf::Sound sound(*resources.getSound("start"));
     sound.play();
@@ -125,7 +152,7 @@ void Game::run() {
 
     sf::Clock clock;
 
-    const sf::Time FIXED_TIMESTEP = sf::seconds(1.0f / 60.606061f);
+    const sf::Time FIXED_TIMESTEP = sf::seconds(1.0f / framerate);
     sf::Time accumulator = sf::Time::Zero;
 
     sf::Time initialGameplayPause;

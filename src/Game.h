@@ -3,17 +3,32 @@
 
 #include <SFML/System/Vector2.hpp>
 #include <string>
+#include <filesystem>
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
+
 class Game {
 public:
-    Game() {};
-    Game(sf::Vector2u windowRes, std::string& windowName, int maxFPS) : windowRes(windowRes), windowName(windowName), maxFPS(maxFPS) {};
+    Game(const std::filesystem::path& configPath);
+    
+    void setScaleFactor(int newScaleFactor) { scaleFactor = newScaleFactor; }
 
     void run();
 
 private:
+    json loadConfig(const std::filesystem::path& configPath);
+
+    const json config;
+
+    const float framerate;
+    const float perPixelMove;
+    const int baseTileSize;
+
+    int scaleFactor = 4;
+
     sf::Vector2u windowRes = {1920, 1080};
     std::string windowName = "Pacmen";
-    unsigned int maxFPS = 60;
 };
 
 #endif

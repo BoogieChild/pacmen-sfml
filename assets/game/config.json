@@ -6,7 +6,8 @@
     "ghostEatenPoints": [200, 400, 800, 1600],
     "frameRate": 60.606061,
     "pacmanEatDotFrames": 1,
-    "pacmanEatEnergizerFrames": 3
+    "pacmanEatEnergizerFrames": 3,
+    "tileSize": 8
   },
   "bonusFruit": {
     "appearAfterDots": [70, 170],
