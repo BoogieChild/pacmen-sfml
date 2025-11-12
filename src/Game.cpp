@@ -148,6 +148,8 @@ void Game::run() {
     sf::Sound pellet0(*resources.getSound("eat_dot_0"));
     sf::Sound pellet1(*resources.getSound("eat_dot_1"));
 
+    sf::Sound fright(*resources.getSound("fright"));
+
     int pelletSoundCount = 0;
 
     sf::Clock clock;
@@ -262,7 +264,19 @@ void Game::run() {
 
                 if (map.hasPellet(currentPacmanTile.x, currentPacmanTile.y)) {
                     map.eatPellet(currentPacmanTile.x, currentPacmanTile.y);
-                    score += 10;
+
+                    switch (map.getPelletType(currentPacmanTile)) {
+                        case PelletType::NONE:
+                            break;
+                        case PelletType::DOT:
+                            score += 10;
+                            break;
+                        case PelletType::ENERGIZER:
+                            score += 50;
+                            fright.play();
+                            break;
+                    };
+
                     scoreText.setString(std::to_string(score));
 
                     if (pelletSoundCount % 2) {

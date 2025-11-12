@@ -81,6 +81,16 @@ bool MazeMap::hasPellet(int x, int y) const {
     return !pelletEaten[tileIndex] && pelletMap[tileIndex] > 0;
 }
 
+PelletType MazeMap::getPelletType(sf::Vector2i tilePos) const {
+    int tileIndex = tilePos.x + tilePos.y * width;
+    int pellet = pelletMap[tileIndex];
+
+    if (pellet == 1) return PelletType::DOT;
+    if (pellet == 2) return PelletType::ENERGIZER;
+
+    return PelletType::NONE;
+}
+
 bool MazeMap::isWall(int x, int y) const {
     if (!isLegalTile(x, y)) return true;
 

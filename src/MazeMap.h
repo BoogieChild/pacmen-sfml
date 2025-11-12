@@ -8,6 +8,12 @@
 #include <filesystem>
 #include "Entity.h"
 
+enum class PelletType {
+    NONE,
+    DOT,
+    ENERGIZER
+};
+
 class MazeMap : public sf::Drawable, public sf::Transformable {
 public:
     MazeMap() : width(28), height(31), tileSize(8), texture(nullptr), baseMazeSprite(std::nullopt) {}
@@ -22,6 +28,8 @@ public:
     void eatPellet(int x, int y);
 
     bool hasPellet(int x, int y) const;
+
+    PelletType getPelletType(sf::Vector2i tilePos) const;
 
     bool isWall(int x, int y) const;
 
