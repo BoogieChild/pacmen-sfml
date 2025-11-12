@@ -172,13 +172,35 @@ bool MazeMap::entityCanMove(Entity& entity, MovementDir dir) {
             break;
         case MovementDir::LEFT:
             targetTile.x -= 1;
+            if (targetTile.x < 0) {
+                targetTile.x = width - 1;
+            }
             break;
         case MovementDir::RIGHT:
             targetTile.x += 1;
+            if (targetTile.x >= static_cast<int>(width)) {
+                targetTile.x = 0;
+            }
             break;
         case MovementDir::STATIC:
             return true;
     };
 
     return !isWall(targetTile.x, targetTile.y);
+};
+
+void MazeMap::handleTunnelWrapping(Entity& entity) {
+    sf::Vector2f pos = entity.getPosition();
+    sf::Vector2i tile = getTileCoords(pos);
+    MovementDir dir = entity.getCurrentDirection();
+
+    float halfTile = tileSize / 2.0f;
+
+    if (tile.x == 0 && dir == MovementDir::LEFT && !entity.isCurrentlyMoving()) {
+        float newX = (width - 1) * tileSize + halfTile;
+        entity.setPosition({newX, pos.y});
+    } else if (tile.x == static_cast<int>(width - 1) && dir == MovementDir::RIGHT && !entity.isCurrentlyMoving()) {
+        float newX = 0 * tileSize + halfTile;
+        entity.setPosition({newX, pos.y});
+    }
 };

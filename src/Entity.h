@@ -61,6 +61,12 @@ public:
 
     void setMovementSpeed(sf::Vector2f newMovementSpeed) { movementSpeed = newMovementSpeed; }
 
+    void adjustTargetPosition(sf::Vector2f offset) {
+        if (targetPosition.has_value()) {
+            targetPosition = targetPosition.value() + offset;
+        }
+    }
+
 protected:
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 

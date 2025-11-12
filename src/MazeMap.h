@@ -38,6 +38,8 @@ public:
 
     void snapEntityToGrid(Entity& entity);
 
+    void handleTunnelWrapping(Entity& entity);
+
     unsigned int getWidth() const { return width; }
     unsigned int getHeight() const { return height; }
     unsigned int getTileSize() const { return tileSize; }

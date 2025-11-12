@@ -258,6 +258,8 @@ void Game::run() {
 
                 pacman.update();
 
+                map.handleTunnelWrapping(pacman);
+
                 if (map.hasPellet(currentPacmanTile.x, currentPacmanTile.y)) {
                     map.eatPellet(currentPacmanTile.x, currentPacmanTile.y);
                     score += 10;
