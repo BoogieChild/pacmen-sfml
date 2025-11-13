@@ -8,7 +8,11 @@
 #include <stdexcept>
 
 #include "Game.h"
+#include "Blinky.h"
+#include "Clyde.h"
+#include "Inky.h"
 #include "MazeMap.h"
+#include "Pinky.h"
 #include "ResourceManager.h"
 #include "Pacman.h"
 #include "Ghost.h"
@@ -91,10 +95,10 @@ void Game::run() {
 
     Pacman pacman;
 
-    Ghost blinky;
-    Ghost pinky;
-    Ghost inky;
-    Ghost clyde;
+    Blinky blinky;
+    Pinky pinky;
+    Inky inky;
+    Clyde clyde;
 
     pacman.setAnimationTiles(resources.getTexture("all_textures"), {1824, 0}, "right_walking", {60, 60}, 2, 0);
     pacman.setAnimationTiles(resources.getTexture("all_textures"), {1824, 64}, "left_walking", {60, 60}, 2, 0);
@@ -143,7 +147,7 @@ void Game::run() {
     auto window = sf::RenderWindow(sf::VideoMode(windowRes), windowName);
 
     sf::Sound sound(*resources.getSound("start"));
-    sound.play();
+    //sound.play();
 
     sf::Sound pellet0(*resources.getSound("eat_dot_0"));
     sf::Sound pellet1(*resources.getSound("eat_dot_1"));
@@ -339,16 +343,16 @@ void Game::run() {
                             break;
                         case PelletType::ENERGIZER:
                             score += 50;
-                            fright.play();
+                            //fright.play();
                             break;
                     };
 
                     scoreText.setString(std::to_string(score));
 
                     if (pelletSoundCount % 2) {
-                        pellet1.play();
+                        //pellet1.play();
                     } else {
-                        pellet0.play();
+                        //pellet0.play();
                     }
 
                     pelletSoundCount++;
