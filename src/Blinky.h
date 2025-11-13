@@ -5,7 +5,7 @@
 
 class Blinky : public Ghost {
 public:
-    void setTargetTile() override;
+    void setTargetTile(Entity& pacman);
 };
 
 #endif

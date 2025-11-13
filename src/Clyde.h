@@ -5,7 +5,7 @@
 
 class Clyde : public Ghost {
 public:
-    void setTargetTile() override;
+    void setTargetTile(Entity& pacman);
 };
 
 #endif

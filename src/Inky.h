@@ -5,7 +5,7 @@
 
 class Inky : public Ghost {
 public:
-    void setTargetTile() override;
+    void setTargetTile(Entity& pacman, Entity& blinky);
 };
 
 #endif

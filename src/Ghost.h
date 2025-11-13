@@ -6,7 +6,6 @@
 
 class Ghost : public Entity {
 public:
-    virtual void setTargetTile() = 0;
 protected:
     sf::Vector2i targetTile;
 };
