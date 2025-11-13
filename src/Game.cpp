@@ -205,7 +205,8 @@ void Game::run() {
                     pacman.queueDirection(MovementDir::UP);
                 } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {
                     pacman.queueDirection(MovementDir::LEFT);
-                } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)|| sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)) {
+                } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)||
+                    sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)) {
                     pacman.queueDirection(MovementDir::DOWN);
                 } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
                     pacman.queueDirection(MovementDir::RIGHT);
