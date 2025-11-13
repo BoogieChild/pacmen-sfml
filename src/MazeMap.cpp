@@ -137,6 +137,23 @@ bool MazeMap::isLegalTile(sf::Vector2i tilePos) const {
 //           y >= 0 && y < static_cast<int>(height);
 //}
 
+bool MazeMap::isIntersectionTile(sf::Vector2i tilePos) const {
+    // true if more than two surrounding tiles are not walls
+
+    int surroundingMovementTiles = 0;
+
+    // +x (right)
+    if (!isWall({tilePos.x + 1, tilePos.y})) surroundingMovementTiles++;
+    // -x (left)
+    if (!isWall({tilePos.x - 1, tilePos.y})) surroundingMovementTiles++;
+    // +y (down)
+    if (!isWall({tilePos.x, tilePos.y + 1})) surroundingMovementTiles++;
+    // -y (up)
+    if (!isWall({tilePos.x, tilePos.y - 1})) surroundingMovementTiles++;
+
+    return surroundingMovementTiles > 2;
+};
+
 void MazeMap::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     if (!texture || !baseMazeSprite.has_value()) return;
 
