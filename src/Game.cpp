@@ -201,14 +201,17 @@ void Game::run() {
             if (initialGameplayPause > sf::seconds(4.5f)) {
                 sf::Vector2i currentPacmanTile = map.getTileCoords(pacman.getPosition());
 
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)) {
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) ||
+                    sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)) {
                     pacman.queueDirection(MovementDir::UP);
-                } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {
+                } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) ||
+                    sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {
                     pacman.queueDirection(MovementDir::LEFT);
                 } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)||
                     sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)) {
                     pacman.queueDirection(MovementDir::DOWN);
-                } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
+                } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) ||
+                    sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
                     pacman.queueDirection(MovementDir::RIGHT);
                 } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q)) {
                     pacman.queueDirection(MovementDir::STATIC);
