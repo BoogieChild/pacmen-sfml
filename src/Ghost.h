@@ -10,7 +10,8 @@ class Ghost : public Entity {
 public:
 	enum class Mode {
 		SCATTER,
-		CHASE
+		CHASE,
+		VULNERABLE
 	};
 
 	enum class AIType {
@@ -21,13 +22,18 @@ public:
 	};
 
 	Ghost(AIType type = AIType::BLINKY) 
-		: currentMode(Mode::SCATTER), lastDirection(MovementDir::STATIC), allowReversal(false), aiType(type), hasExitedBox(type == AIType::BLINKY) {}
+		: currentMode(Mode::SCATTER), lastDirection(MovementDir::STATIC), allowReversal(false), aiType(type), hasExitedBox(type == AIType::BLINKY), isVulnerable(false), previousMode(Mode::SCATTER) {}
 
 	void setMode(Mode m) { 
 		currentMode = m;
 		allowReversal = true;  // Allow reversal when mode changes
 	}
 	Mode getMode() const { return currentMode; }
+
+	// Vulnerable mode methods
+	void setVulnerable(bool vulnerable);
+	bool getIsVulnerable() const { return isVulnerable; }
+	void endVulnerable();
 
 	// Set the exit tile for the ghost box (where ghost should exit toward)
 	void setBoxExitTile(sf::Vector2i exitTile) { boxExitTile = exitTile; }
@@ -46,6 +52,8 @@ private:
 	bool hasExitedBox;
 	sf::Vector2i boxExitTile;
 	int boxBoundaryY;
+	bool isVulnerable;
+	Mode previousMode;  // Mode to return to after vulnerable ends
 };
 
 #endif

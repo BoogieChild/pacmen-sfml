@@ -112,6 +112,7 @@ void Game::run() {
     blinky.setAnimationTiles(resources.getTexture("all_textures"), {1952, 256}, "left_walking", {60, 60}, 2, 4);
     blinky.setAnimationTiles(resources.getTexture("all_textures"), {2080, 256}, "up_walking", {60, 60}, 2, 4);
     blinky.setAnimationTiles(resources.getTexture("all_textures"), {2208, 256}, "down_walking", {60, 60}, 2, 4);
+    blinky.setAnimationTiles(resources.getTexture("all_textures"), {2336, 256}, "vulnerable", {60, 60}, 2, 4);
     blinky.setActiveSprite("left_walking", 0);
     blinky.setOrigin({30, 30});
     blinky.setPosition({14.5 * 32.0f - 16.0f, 12 * 32.0f - 16.0f});
@@ -121,6 +122,7 @@ void Game::run() {
     pinky.setAnimationTiles(resources.getTexture("all_textures"), {1952, 320}, "left_walking", {60, 60}, 2, 4);
     pinky.setAnimationTiles(resources.getTexture("all_textures"), {2080, 320}, "up_walking", {60, 60}, 2, 4);
     pinky.setAnimationTiles(resources.getTexture("all_textures"), {2208, 320}, "down_walking", {60, 60}, 2, 4);
+    pinky.setAnimationTiles(resources.getTexture("all_textures"), {2336, 256}, "vulnerable", {60, 60}, 2, 4);
     pinky.setActiveSprite("down_walking", 0);
     pinky.setOrigin({30, 30});
     pinky.setPosition({14.5 * 32.0f - 16.0f, 15 * 32.0f - 16.0f});
@@ -130,6 +132,7 @@ void Game::run() {
     inky.setAnimationTiles(resources.getTexture("all_textures"), {1952, 384}, "left_walking", {60, 60}, 2, 4);
     inky.setAnimationTiles(resources.getTexture("all_textures"), {2080, 384}, "up_walking", {60, 60}, 2, 4);
     inky.setAnimationTiles(resources.getTexture("all_textures"), {2208, 384}, "down_walking", {60, 60}, 2, 4);
+    inky.setAnimationTiles(resources.getTexture("all_textures"), {2336, 256}, "vulnerable", {60, 60}, 2, 4);
     inky.setActiveSprite("up_walking", 0);
     inky.setOrigin({30, 30});
     inky.setPosition({12.5 * 32.0f - 16.0f, 15 * 32.0f - 16.0f});
@@ -139,6 +142,7 @@ void Game::run() {
     clyde.setAnimationTiles(resources.getTexture("all_textures"), {1952, 448}, "left_walking", {60, 60}, 2, 4);
     clyde.setAnimationTiles(resources.getTexture("all_textures"), {2080, 448}, "up_walking", {60, 60}, 2, 4);
     clyde.setAnimationTiles(resources.getTexture("all_textures"), {2208, 448}, "down_walking", {60, 60}, 2, 4);
+    clyde.setAnimationTiles(resources.getTexture("all_textures"), {2336, 256}, "vulnerable", {60, 60}, 2, 4);
     clyde.setActiveSprite("up_walking", 0);
     clyde.setOrigin({30, 30});
     clyde.setPosition({16.5 * 32.0f - 16.0f, 15 * 32.0f - 16.0f});
@@ -185,6 +189,11 @@ void Game::run() {
     bool pinkyReleased = false;
     bool inkyReleased = false;
     bool clydeReleased = false;
+
+    // Vulnerable mode timer
+    sf::Clock vulnerableTimer;
+    bool vulnerableModeActive = false;
+    const float vulnerableDurationSeconds = 8.0f;  // Duration of vulnerable mode
 
     auto window = sf::RenderWindow(sf::VideoMode(windowRes), windowName);
 
@@ -254,6 +263,15 @@ void Game::run() {
                     }
                     if (!clydeReleased && clydeExitClock.getElapsedTime() > sf::seconds(clydeExitDelaySeconds)) {
                         clydeReleased = true;
+                    }
+
+                    // Check if vulnerable mode should end
+                    if (vulnerableModeActive && vulnerableTimer.getElapsedTime() > sf::seconds(vulnerableDurationSeconds)) {
+                        vulnerableModeActive = false;
+                        blinky.setVulnerable(false);
+                        pinky.setVulnerable(false);
+                        inky.setVulnerable(false);
+                        clyde.setVulnerable(false);
                     }
 
                     // updates ghost behavior modes when time is up
@@ -449,6 +467,13 @@ void Game::run() {
                         case PelletType::ENERGIZER:
                             score += 50;
                             fright.play();
+                            // Activate vulnerable mode for all ghosts
+                            vulnerableModeActive = true;
+                            vulnerableTimer.restart();
+                            blinky.setVulnerable(true);
+                            pinky.setVulnerable(true);
+                            inky.setVulnerable(true);
+                            clyde.setVulnerable(true);
                             break;
                     };
 

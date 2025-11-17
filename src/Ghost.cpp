@@ -2,6 +2,7 @@
 #include "MazeMap.h"
 #include "Pacman.h"
 #include <cmath>
+#include <SFML/System/Clock.hpp>
 
 static MovementDir oppositeDirection(MovementDir d) {
 	switch (d) {
@@ -14,7 +15,7 @@ static MovementDir oppositeDirection(MovementDir d) {
 	return MovementDir::STATIC;
 }
 
-void Ghost::updateAI(MazeMap& map, const Pacman& pacman) {
+	void Ghost::updateAI(MazeMap& map, const Pacman& pacman) {
 	// Only decide a new move when the ghost is not currently moving
 	if (isCurrentlyMoving()) return;
 
@@ -34,6 +35,20 @@ void Ghost::updateAI(MazeMap& map, const Pacman& pacman) {
 		if (currentTile.y > boxBoundaryY) {
 			// Force target back toward exit
 			targetTile = boxExitTile;
+		} else if (currentMode == Mode::VULNERABLE) {
+			// In vulnerable mode, run away from Pacman
+			sf::Vector2i pacmanTile = map.getTileCoords(pacman.getPosition());
+			// Target a tile far away from Pacman (simple implementation: go to opposite corner)
+			if (pacmanTile.x < map.getWidth() / 2) {
+				targetTile.x = map.getWidth() - 1;  // Far right
+			} else {
+				targetTile.x = 0;  // Far left
+			}
+			if (pacmanTile.y < map.getHeight() / 2) {
+				targetTile.y = map.getHeight() - 1;  // Far bottom
+			} else {
+				targetTile.y = 0;  // Far top
+			}
 		} else if (currentMode == Mode::CHASE) {
 			// Normal chase/scatter AI
 			sf::Vector2i pacmanTile = map.getTileCoords(pacman.getPosition());
@@ -179,12 +194,17 @@ void Ghost::updateAI(MazeMap& map, const Pacman& pacman) {
 			}
 
 			// Set appropriate sprite and start the move toward the tile center
-			switch (dir) {
-				case MovementDir::UP: setActiveSprite("up_walking", 0); break;
-				case MovementDir::DOWN: setActiveSprite("down_walking", 0); break;
-				case MovementDir::LEFT: setActiveSprite("left_walking", 0); break;
-				case MovementDir::RIGHT: setActiveSprite("right_walking", 0); break;
-				default: break;
+			if (isVulnerable) {
+				// Use vulnerable sprite regardless of direction
+				setActiveSprite("vulnerable", 0);
+			} else {
+				switch (dir) {
+					case MovementDir::UP: setActiveSprite("up_walking", 0); break;
+					case MovementDir::DOWN: setActiveSprite("down_walking", 0); break;
+					case MovementDir::LEFT: setActiveSprite("left_walking", 0); break;
+					case MovementDir::RIGHT: setActiveSprite("right_walking", 0); break;
+					default: break;
+				}
 			}
 
 			lastDirection = dir;
@@ -194,5 +214,24 @@ void Ghost::updateAI(MazeMap& map, const Pacman& pacman) {
 			return;
 		}
 	}
+}
+
+void Ghost::setVulnerable(bool vulnerable) {
+	if (vulnerable && !isVulnerable) {
+		// Entering vulnerable mode
+		previousMode = currentMode;  // Save current mode
+		currentMode = Mode::VULNERABLE;
+		isVulnerable = true;
+		allowReversal = true;  // Allow direction reversal when becoming vulnerable
+	} else if (!vulnerable && isVulnerable) {
+		// Exiting vulnerable mode
+		isVulnerable = false;
+		currentMode = previousMode;  // Restore previous mode
+		allowReversal = true;  // Allow direction reversal when exiting vulnerable
+	}
+}
+
+void Ghost::endVulnerable() {
+	setVulnerable(false);
 }
 
