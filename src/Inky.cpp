@@ -1,5 +1,5 @@
 #include "Inky.h"
 
-void Inky::setTargetTile() {
+void Inky::setTargetTile(Entity& pacman, Entity& blinky) {
 
 };

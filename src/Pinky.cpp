@@ -1,5 +1,5 @@
 #include "Pinky.h"
 
-void Pinky::setTargetTile() {
+void Pinky::setTargetTile(Entity& pacman) {
 
 };

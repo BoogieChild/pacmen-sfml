@@ -25,9 +25,9 @@ private:
     const float perPixelMove;
     const int baseTileSize;
 
-    int scaleFactor = 4;
+    int scaleFactor = 3;
 
-    sf::Vector2u windowRes = {896, 1080};
+    sf::Vector2u windowRes = {672, 810};
     std::string windowName = "Pacmen";
 };
 

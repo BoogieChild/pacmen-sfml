@@ -82,14 +82,16 @@ void Game::run() {
     resources.loadSound("siren4_firstloop", "assets/sounds/siren4_firstloop.wav");
     resources.loadSound("start", "assets/sounds/start.wav");
 
-    // Texture layout: [Pellet Maze Image] + gap (16px) + [Base Maze Image]
+    // Texture layout: [Pellet Maze Image] + gap (4px at base scale) + [Base Maze Image]
     // Original: 224px (28*8) + 4px gap at 8px tiles
-    // Scaled 4x: 896px (28*32) + 16px gap at 32px tiles
+    // Gap scales with tile size: (28 * tileSize) + (4 * scaleFactor)
+    const unsigned int mazePixelWidth = 28 * tileSize;
+    const unsigned int gapWidth = 4 * scaleFactor;
     map.loadMaze(resources.getMazeMap(),
                  resources.getPelletMap(),
                  resources.getTexture("all_textures"),
                  tileSize,
-                 {912, 0},
+                 {mazePixelWidth + gapWidth, 0},
                  {0, 0});
 
 
@@ -100,49 +102,49 @@ void Game::run() {
     Inky inky;
     Clyde clyde;
 
-    pacman.setAnimationTiles(resources.getTexture("all_textures"), {1824, 0}, "right_walking", {60, 60}, 2, 0);
-    pacman.setAnimationTiles(resources.getTexture("all_textures"), {1824, 64}, "left_walking", {60, 60}, 2, 0);
-    pacman.setAnimationTiles(resources.getTexture("all_textures"), {1824, 128}, "up_walking", {60, 60}, 2, 0);
-    pacman.setAnimationTiles(resources.getTexture("all_textures"), {1824, 192}, "down_walking", {60, 60}, 2, 0);
-    pacman.setAnimationTiles(resources.getTexture("all_textures"), {1952, 0}, "static", {60, 60}, 1, 0);
-    pacman.setAnimationTiles(resources.getTexture("all_textures"), {2016, 0}, "death", {60, 60}, 11, 4);
+    pacman.setAnimationTiles(resources.getTexture("all_textures"), {1368, 0}, "right_walking", {45, 45}, 2, 0);
+    pacman.setAnimationTiles(resources.getTexture("all_textures"), {1368, 48}, "left_walking", {45, 45}, 2, 0);
+    pacman.setAnimationTiles(resources.getTexture("all_textures"), {1368, 96}, "up_walking", {45, 45}, 2, 0);
+    pacman.setAnimationTiles(resources.getTexture("all_textures"), {1368, 144}, "down_walking", {45, 45}, 2, 0);
+    pacman.setAnimationTiles(resources.getTexture("all_textures"), {1464, 0}, "static", {45, 45}, 1, 0);
+    pacman.setAnimationTiles(resources.getTexture("all_textures"), {1512, 0}, "death", {45, 45}, 11, 3);
     pacman.setActiveSprite("static", 0);
-    pacman.setOrigin({30, 30});
+    pacman.setOrigin({22.5, 22.5});
     // Tile center = tile * tileSize + tileSize/2
-    pacman.setPosition({14.5 * 32.0f - 16.0f, 24 * 32.0f - 16.0f});
+    pacman.setPosition({14.5f * tileSize - (tileSize / 2.0f), 24.0f * tileSize - (tileSize / 2.0f)});
     pacman.setMovementSpeed({perLoopMove, perLoopMove});
 
-    blinky.setAnimationTiles(resources.getTexture("all_textures"), {1824, 256}, "right_walking", {60, 60}, 2, 4);
-    blinky.setAnimationTiles(resources.getTexture("all_textures"), {1952, 256}, "left_walking", {60, 60}, 2, 4);
-    blinky.setAnimationTiles(resources.getTexture("all_textures"), {2080, 256}, "up_walking", {60, 60}, 2, 4);
-    blinky.setAnimationTiles(resources.getTexture("all_textures"), {2208, 256}, "down_walking", {60, 60}, 2, 4);
+    blinky.setAnimationTiles(resources.getTexture("all_textures"), {1368, 192}, "right_walking", {45, 45}, 2, 3);
+    blinky.setAnimationTiles(resources.getTexture("all_textures"), {1464, 192}, "left_walking", {45, 45}, 2, 3);
+    blinky.setAnimationTiles(resources.getTexture("all_textures"), {1560, 192}, "up_walking", {45, 45}, 2, 3);
+    blinky.setAnimationTiles(resources.getTexture("all_textures"), {1656, 192}, "down_walking", {45, 45}, 2, 3);
     blinky.setActiveSprite("left_walking", 0);
-    blinky.setOrigin({30, 30});
-    blinky.setPosition({14.5 * 32.0f - 16.0f, 12 * 32.0f - 16.0f});
+    blinky.setOrigin({22.5, 22.5});
+    blinky.setPosition({14.5f * tileSize - (tileSize / 2.0f), 12.0f * tileSize - (tileSize / 2.0f)});
 
-    pinky.setAnimationTiles(resources.getTexture("all_textures"), {1824, 320}, "right_walking", {60, 60}, 2, 4);
-    pinky.setAnimationTiles(resources.getTexture("all_textures"), {1952, 320}, "left_walking", {60, 60}, 2, 4);
-    pinky.setAnimationTiles(resources.getTexture("all_textures"), {2080, 320}, "up_walking", {60, 60}, 2, 4);
-    pinky.setAnimationTiles(resources.getTexture("all_textures"), {2208, 320}, "down_walking", {60, 60}, 2, 4);
+    pinky.setAnimationTiles(resources.getTexture("all_textures"), {1368, 240}, "right_walking", {45, 45}, 2, 3);
+    pinky.setAnimationTiles(resources.getTexture("all_textures"), {1464, 240}, "left_walking", {45, 45}, 2, 3);
+    pinky.setAnimationTiles(resources.getTexture("all_textures"), {1560, 240}, "up_walking", {45, 45}, 2, 3);
+    pinky.setAnimationTiles(resources.getTexture("all_textures"), {1656, 240}, "down_walking", {45, 45}, 2, 3);
     pinky.setActiveSprite("down_walking", 0);
-    pinky.setOrigin({30, 30});
-    pinky.setPosition({14.5 * 32.0f - 16.0f, 15 * 32.0f - 16.0f});
+    pinky.setOrigin({22.5, 22.5});
+    pinky.setPosition({14.5f * tileSize - (tileSize / 2.0f), 15.0f * tileSize - (tileSize / 2.0f)});
 
-    inky.setAnimationTiles(resources.getTexture("all_textures"), {1824, 384}, "right_walking", {60, 60}, 2, 4);
-    inky.setAnimationTiles(resources.getTexture("all_textures"), {1952, 384}, "left_walking", {60, 60}, 2, 4);
-    inky.setAnimationTiles(resources.getTexture("all_textures"), {2080, 384}, "up_walking", {60, 60}, 2, 4);
-    inky.setAnimationTiles(resources.getTexture("all_textures"), {2208, 384}, "down_walking", {60, 60}, 2, 4);
+    inky.setAnimationTiles(resources.getTexture("all_textures"), {1368, 288}, "right_walking", {45, 45}, 2, 3);
+    inky.setAnimationTiles(resources.getTexture("all_textures"), {1464, 288}, "left_walking", {45, 45}, 2, 3);
+    inky.setAnimationTiles(resources.getTexture("all_textures"), {1560, 288}, "up_walking", {45, 45}, 2, 3);
+    inky.setAnimationTiles(resources.getTexture("all_textures"), {1656, 288}, "down_walking", {45, 45}, 2, 3);
     inky.setActiveSprite("up_walking", 0);
-    inky.setOrigin({30, 30});
-    inky.setPosition({12.5 * 32.0f - 16.0f, 15 * 32.0f - 16.0f});
+    inky.setOrigin({22.5, 22.5});
+    inky.setPosition({12.5f * tileSize - (tileSize / 2.0f), 15.0f * tileSize - (tileSize / 2.0f)});
 
-    clyde.setAnimationTiles(resources.getTexture("all_textures"), {1824, 448}, "right_walking", {60, 60}, 2, 4);
-    clyde.setAnimationTiles(resources.getTexture("all_textures"), {1952, 448}, "left_walking", {60, 60}, 2, 4);
-    clyde.setAnimationTiles(resources.getTexture("all_textures"), {2080, 448}, "up_walking", {60, 60}, 2, 4);
-    clyde.setAnimationTiles(resources.getTexture("all_textures"), {2208, 448}, "down_walking", {60, 60}, 2, 4);
+    clyde.setAnimationTiles(resources.getTexture("all_textures"), {1368, 336}, "right_walking", {45, 45}, 2, 3);
+    clyde.setAnimationTiles(resources.getTexture("all_textures"), {1464, 336}, "left_walking", {45, 45}, 2, 3);
+    clyde.setAnimationTiles(resources.getTexture("all_textures"), {1560, 336}, "up_walking", {45, 45}, 2, 3);
+    clyde.setAnimationTiles(resources.getTexture("all_textures"), {1656, 336}, "down_walking", {45, 45}, 2, 3);
     clyde.setActiveSprite("up_walking", 0);
-    clyde.setOrigin({30, 30});
-    clyde.setPosition({16.5 * 32.0f - 16.0f, 15 * 32.0f - 16.0f});
+    clyde.setOrigin({22.5, 22.5});
+    clyde.setPosition({16.5f * tileSize - (tileSize / 2.0f), 15.0f * tileSize - (tileSize / 2.0f)});
 
     auto window = sf::RenderWindow(sf::VideoMode(windowRes), windowName);
 
@@ -167,23 +169,23 @@ void Game::run() {
     sf::Font bitFont = resources.getFont("bitFont");
     sf::Text scoreText(bitFont);
     scoreText.setString(std::to_string(score));
-    scoreText.setPosition({16, 32 * 31 + 16});
+    scoreText.setPosition({16.0f, tileSize * 31.0f + 16.0f});
 
-    sf::Sprite pacmanLifeOne(resources.getTexture("all_textures"), {{2340, 68}, {52, 52}});
-    pacmanLifeOne.setOrigin({52, 0});
-    pacmanLifeOne.setPosition({32 * 28, 32 * 31});
-    
-    sf::Sprite pacmanLifeTwo(resources.getTexture("all_textures"), {{2340, 68}, {52, 52}});
-    pacmanLifeTwo.setOrigin({52, 0});
-    pacmanLifeTwo.setPosition({32 * 26.5, 32 * 31});
+    sf::Sprite pacmanLifeOne(resources.getTexture("all_textures"), {{1755, 51}, {39, 39}});
+    pacmanLifeOne.setOrigin({39, 0});
+    pacmanLifeOne.setPosition({tileSize * 28.0f, tileSize * 31.0f});
 
-    sf::Sprite fruitOne(resources.getTexture("all_textures"), {{1956, 192}, {60, 60}});
-    fruitOne.setOrigin({60, 0});
-    fruitOne.setPosition({32 * 16, 32 * 31});
+    sf::Sprite pacmanLifeTwo(resources.getTexture("all_textures"), {{1755, 51}, {39, 39}});
+    pacmanLifeTwo.setOrigin({39, 0});
+    pacmanLifeTwo.setPosition({tileSize * 26.5f, tileSize * 31.0f});
 
-    sf::Sprite fruitTwo(resources.getTexture("all_textures"), {{1956, 192}, {60, 60}});
-    fruitTwo.setOrigin({60, 0});
-    fruitTwo.setPosition({32 * 14, 32 * 31});
+    sf::Sprite fruitOne(resources.getTexture("all_textures"), {{1467, 144}, {45, 45}});
+    fruitOne.setOrigin({45, 0});
+    fruitOne.setPosition({tileSize * 16.0f, tileSize * 31.0f});
+
+    sf::Sprite fruitTwo(resources.getTexture("all_textures"), {{1467, 144}, {45, 45}});
+    fruitTwo.setOrigin({45, 0});
+    fruitTwo.setPosition({tileSize * 14.0f, tileSize * 31.0f});
 
     while (window.isOpen())
     {

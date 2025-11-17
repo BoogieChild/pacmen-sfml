@@ -1,5 +1,5 @@
 #include "Clyde.h"
 
-void Clyde::setTargetTile() {
+void Clyde::setTargetTile(Entity& pacman) {
 
 };
