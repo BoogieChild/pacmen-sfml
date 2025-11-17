@@ -91,10 +91,10 @@ void Game::run() {
 
     Pacman pacman;
 
-    Ghost blinky;
-    Ghost pinky;
-    Ghost inky;
-    Ghost clyde;
+    Ghost blinky(Ghost::AIType::BLINKY);
+    Ghost pinky(Ghost::AIType::PINKY);
+    Ghost inky(Ghost::AIType::INKY);
+    Ghost clyde(Ghost::AIType::CLYDE);
 
     pacman.setAnimationTiles(resources.getTexture("all_textures"), {1824, 0}, "right_walking", {60, 60}, 2, 0);
     pacman.setAnimationTiles(resources.getTexture("all_textures"), {1824, 64}, "left_walking", {60, 60}, 2, 0);
@@ -115,6 +115,7 @@ void Game::run() {
     blinky.setActiveSprite("left_walking", 0);
     blinky.setOrigin({30, 30});
     blinky.setPosition({14.5 * 32.0f - 16.0f, 12 * 32.0f - 16.0f});
+    blinky.setMovementSpeed({perLoopMove * 0.8f, perLoopMove * 0.8f});
 
     pinky.setAnimationTiles(resources.getTexture("all_textures"), {1824, 320}, "right_walking", {60, 60}, 2, 4);
     pinky.setAnimationTiles(resources.getTexture("all_textures"), {1952, 320}, "left_walking", {60, 60}, 2, 4);
@@ -123,6 +124,7 @@ void Game::run() {
     pinky.setActiveSprite("down_walking", 0);
     pinky.setOrigin({30, 30});
     pinky.setPosition({14.5 * 32.0f - 16.0f, 15 * 32.0f - 16.0f});
+    pinky.setMovementSpeed({perLoopMove * 0.8f, perLoopMove * 0.8f});
 
     inky.setAnimationTiles(resources.getTexture("all_textures"), {1824, 384}, "right_walking", {60, 60}, 2, 4);
     inky.setAnimationTiles(resources.getTexture("all_textures"), {1952, 384}, "left_walking", {60, 60}, 2, 4);
@@ -131,6 +133,7 @@ void Game::run() {
     inky.setActiveSprite("up_walking", 0);
     inky.setOrigin({30, 30});
     inky.setPosition({12.5 * 32.0f - 16.0f, 15 * 32.0f - 16.0f});
+    inky.setMovementSpeed({perLoopMove * 0.8f, perLoopMove * 0.8f});
 
     clyde.setAnimationTiles(resources.getTexture("all_textures"), {1824, 448}, "right_walking", {60, 60}, 2, 4);
     clyde.setAnimationTiles(resources.getTexture("all_textures"), {1952, 448}, "left_walking", {60, 60}, 2, 4);
@@ -139,6 +142,49 @@ void Game::run() {
     clyde.setActiveSprite("up_walking", 0);
     clyde.setOrigin({30, 30});
     clyde.setPosition({16.5 * 32.0f - 16.0f, 15 * 32.0f - 16.0f});
+    clyde.setMovementSpeed({perLoopMove * 0.8f, perLoopMove * 0.8f});
+
+    // Set up ghost box boundaries for all ghosts
+    // Exit tile is at (14, 12), boundary is Y=12 (don't allow ghosts below this Y)
+    blinky.setBoxExitTile({14, 12});
+    blinky.setBoxBoundaryY(12);
+    
+    pinky.setBoxExitTile({14, 12});
+    pinky.setBoxBoundaryY(12);
+    inky.setBoxExitTile({14, 12});
+    inky.setBoxBoundaryY(12);
+    clyde.setBoxExitTile({14, 12});
+    clyde.setBoxBoundaryY(12);
+
+    // Initialize ghost modes (start in Scatter)
+    blinky.setMode(Ghost::Mode::SCATTER);
+    pinky.setMode(Ghost::Mode::SCATTER);
+    inky.setMode(Ghost::Mode::SCATTER);
+    clyde.setMode(Ghost::Mode::SCATTER);
+
+    // Mode scheduler: simple alternating scatter/chase timer
+    sf::Clock modeClock;
+    const float scatterDurationSeconds = 7.0f;
+    const float chaseDurationSeconds = 20.0f;
+    bool currentlyScatter = true;
+    modeClock.restart();
+
+    // Ghost exit timers (staggered release from ghost box)
+    sf::Clock blinkyExitClock;
+    sf::Clock pinkyExitClock;
+    sf::Clock inkyExitClock;
+    sf::Clock clydeExitClock;
+    
+    // Offset timers by the intro pause (~5s) so ghosts release after intro
+    const float blinkyExitDelaySeconds = 5.0f;   // Blinky exits after 5 seconds (intro offset)
+    const float pinkyExitDelaySeconds = 10.0f;   // Pinky exits after 10 seconds
+    const float inkyExitDelaySeconds = 15.0f;    // Inky exits after 15 seconds
+    const float clydeExitDelaySeconds = 20.0f;   // Clyde exits after 20 seconds
+    
+    bool blinkyReleased = true;   // Blinky starts immediately
+    bool pinkyReleased = false;
+    bool inkyReleased = false;
+    bool clydeReleased = false;
 
     auto window = sf::RenderWindow(sf::VideoMode(windowRes), windowName);
 
@@ -199,6 +245,37 @@ void Game::run() {
             accumulator -= FIXED_TIMESTEP;
 
             if (initialGameplayPause > sf::seconds(4.5f)) {
+                    // Check ghost exit timers (staggered release)
+                    if (!pinkyReleased && pinkyExitClock.getElapsedTime() > sf::seconds(pinkyExitDelaySeconds)) {
+                        pinkyReleased = true;
+                    }
+                    if (!inkyReleased && inkyExitClock.getElapsedTime() > sf::seconds(inkyExitDelaySeconds)) {
+                        inkyReleased = true;
+                    }
+                    if (!clydeReleased && clydeExitClock.getElapsedTime() > sf::seconds(clydeExitDelaySeconds)) {
+                        clydeReleased = true;
+                    }
+
+                    // updates ghost behavior modes when time is up
+                    sf::Time modeElapsed = modeClock.getElapsedTime();
+                    if (currentlyScatter && modeElapsed > sf::seconds(scatterDurationSeconds)) {
+                        // switch to chase
+                        currentlyScatter = false;
+                        modeClock.restart();
+                        blinky.setMode(Ghost::Mode::CHASE);
+                        pinky.setMode(Ghost::Mode::CHASE);
+                        inky.setMode(Ghost::Mode::CHASE);
+                        clyde.setMode(Ghost::Mode::CHASE);
+                    } else if (!currentlyScatter && modeElapsed > sf::seconds(chaseDurationSeconds)) {
+                        // switch to scatter
+                        currentlyScatter = true;
+                        modeClock.restart();
+                        blinky.setMode(Ghost::Mode::SCATTER);
+                        pinky.setMode(Ghost::Mode::SCATTER);
+                        inky.setMode(Ghost::Mode::SCATTER);
+                        clyde.setMode(Ghost::Mode::SCATTER);
+                    }
+
                 sf::Vector2i currentPacmanTile = map.getTileCoords(pacman.getPosition());
 
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) ||
@@ -331,6 +408,34 @@ void Game::run() {
                 pacman.update();
 
                 map.handleTunnelWrapping(pacman);
+
+                // Update Blinky's AI and movement (Blinky is the red ghost) - released immediately
+                if (blinkyReleased) {
+                    blinky.updateAI(map, pacman);
+                    blinky.update();
+                    map.handleTunnelWrapping(blinky);
+                }
+
+                // Update Pinky's AI and movement (Pinky is the pink ghost) - released after delay
+                if (pinkyReleased) {
+                    pinky.updateAI(map, pacman);
+                    pinky.update();
+                    map.handleTunnelWrapping(pinky);
+                }
+
+                // Update Inky's AI and movement (Inky is the blue ghost) - released after delay
+                if (inkyReleased) {
+                    inky.updateAI(map, pacman);
+                    inky.update();
+                    map.handleTunnelWrapping(inky);
+                }
+
+                // Update Clyde's AI and movement (Clyde is the orange ghost) - released after delay
+                if (clydeReleased) {
+                    clyde.updateAI(map, pacman);
+                    clyde.update();
+                    map.handleTunnelWrapping(clyde);
+                }
 
                 if (map.hasPellet(currentPacmanTile.x, currentPacmanTile.y)) {
                     map.eatPellet(currentPacmanTile.x, currentPacmanTile.y);

@@ -20,7 +20,7 @@ FetchContent_Declare(json
 
 FetchContent_MakeAvailable(SFML json)
 
-add_executable(main src/main.cpp src/Entity.cpp src/Game.cpp src/MazeMap.cpp src/ResourceManager.cpp)
+add_executable(main src/main.cpp src/Entity.cpp src/Game.cpp src/MazeMap.cpp src/ResourceManager.cpp src/Ghost.cpp src/Pacman.cpp)
 target_compile_features(main PRIVATE cxx_std_17)
 target_link_libraries(main PRIVATE SFML::Graphics SFML::Audio nlohmann_json::nlohmann_json)
 
